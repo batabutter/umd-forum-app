@@ -36,7 +36,7 @@ export default function App() {
         </Text>
 
         <DynamicButton
-        text="Continue to Sign In"
+        text="Continue to Homepage"
         styleContainer="w-[200px] mt-20"
         handlePress={() => router.push("/sign-in")}
         />
