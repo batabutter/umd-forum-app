@@ -11,7 +11,8 @@ CREATE TABLE posts(
     content         varchar(80),
     created_at      TIMESTAMP DEFAULT NOW(),
     upvotes         numeric DEFAULT 0,
-    downvotes       numeric DEFAULT 0
+    downvotes       numeric DEFAULT 0,
+    num_comments    numeric DEFAULT 0
 );
 
 
@@ -21,5 +22,6 @@ CREATE TABLE comments(
     content         varchar(80),
     upvotes         numeric DEFAULT 0,
     downvotes       numeric DEFAULT 0,
+    num_replies     numeric DEFAULT 0,
     CONSTRAINT fk_post FOREIGN KEY(post_id) REFERENCES posts(post_id)
 );
