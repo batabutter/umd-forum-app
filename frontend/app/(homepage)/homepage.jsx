@@ -5,6 +5,7 @@ import React from 'react'
 
 import "../../global.css";
 import Post from '../../components/Post';
+import ListPosts from '../../components/ListPosts';
 
 const homepage = () => {
     return (
@@ -14,12 +15,7 @@ const homepage = () => {
                 centerComponent={{ text: 'MY TITLE', style: { color: '#fff' } }}
                 rightComponent={{ icon: 'home', color: '#fff' }}
             />
-            <View>
-                <Post/>
-                <Post/>
-                <Post/>
-                <Post/>
-            </View>
+            <ListPosts/>
         </View>
     )
 }
