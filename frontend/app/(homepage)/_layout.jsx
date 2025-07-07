@@ -1,5 +1,5 @@
 import { View, Text } from 'react-native'
-import { Redirect, Stack } from "expo-router";
+import { Stack } from "expo-router";
 import React from 'react'
 
 const _layout = () => {

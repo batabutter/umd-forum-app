@@ -8,7 +8,7 @@ Major:
     - Add upvote and downvote buttonst to main page
 
     Post-Page:
-    - Create this
+    - Make look pretty
 
 Not-So Major (Major but to be done later):
 - Add botom naviation tabs
