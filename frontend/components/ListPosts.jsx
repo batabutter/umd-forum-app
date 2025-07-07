@@ -17,7 +17,7 @@ const ListPosts = () => {
         }
     }
 
-    useEffect(() =>{
+    useEffect(() => {
         getPosts()
     }, [])
 
@@ -25,7 +25,16 @@ const ListPosts = () => {
     return (
         <SafeAreaView>
             <FlatList
-            
+                data={currposts}
+                renderItem={({ item }) =>
+                    <Post
+                        title={item.title} 
+                        content={item.content}
+                        upvotes={item.upvotes}
+                        downvotes={item.downvotes}
+                        numcomments={item.num_comments}
+                    />}
+                keyExtractor={item => item.post_id}
             />
         </SafeAreaView>
     )
