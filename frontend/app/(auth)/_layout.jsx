@@ -1,10 +1,19 @@
-import { Text, View } from 'react-native'
+import { Redirect, Stack } from "expo-router";
+import { Image, Text, View } from "react-native";
 
-const AuthLayout  = () => {
+import { SafeAreaView } from "react-native-safe-area-context";
+import "../../global.css";
+
+
+import DynamicButton from "../../components/DyanmicButton";
+import { images } from '../../constants';
+const AuthLayout = () => {
   return (
-    <View>
-      <Text> AuthLayout </Text>
-    </View>
+     <Stack
+      screenOptions={{
+        headerShown: false,  
+      }}
+    />
   )
 }
 

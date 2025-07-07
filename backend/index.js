@@ -38,6 +38,9 @@ app.post("/posts/:id/comments", async (req, res) => {
             "INSERT INTO comments(post_id, content) VALUES($1, $2) RETURNING *",
             [id, content]
         )
+        const incrementCount = await pool.query("UPDATE posts SET \
+            num_comments = num_comments + 1 WHERE post_id = $1 RETURNING *",
+            [id])
 
         res.json(newComment.rows[0])
     } catch (error) {
@@ -62,7 +65,7 @@ app.get("/posts", async (req, res) => {
 
 // get a specifc post
 
-app.get("/posts/:id", async (req, res) =>{
+app.get("/posts/:id", async (req, res) => {
 
     try {
         const { id } = req.params
@@ -78,11 +81,12 @@ app.get("/posts/:id", async (req, res) =>{
 
 // get comments from a specific post
 
-app.get("/posts/:id/comments", async (req, res) =>{
+app.get("/posts/:id/comments", async (req, res) => {
 
     try {
         const { id } = req.params
-        const comments = await pool.query("SELECT * FROM comments WHERE post_id = $1",
+        const comments = await pool.query("SELECT * FROM comments WHERE \
+            post_id = $1",
             [id]
         )
         res.json(comments.rows)
@@ -94,11 +98,12 @@ app.get("/posts/:id/comments", async (req, res) =>{
 
 // edit a post
 
-app.put("/posts/:id", async(req, res) => {
+app.put("/posts/:id", async (req, res) => {
     try {
         const { id } = req.params
         const { content } = req.body
-        const updatePost = await pool.query("UPDATE posts SET content = $1 WHERE post_id = $2 RETURNING *",
+        const updatePost = await pool.query("UPDATE posts SET \
+            content = $1 WHERE post_id = $2 RETURNING *",
             [content, id])
         res.json(updatePost.rows[0])
     } catch (error) {
@@ -108,11 +113,12 @@ app.put("/posts/:id", async(req, res) => {
 
 // edit a comment 
 
-app.put("/posts/:post_id/comments/:comment_id", async(req, res) => {
+app.put("/posts/:post_id/comments/:comment_id", async (req, res) => {
     try {
         const { post_id, comment_id } = req.params
         const { content } = req.body
-        const updateComment = await pool.query("UPDATE comments SET content = $1 WHERE post_id = $2 AND comment_id = $3 RETURNING *",
+        const updateComment = await pool.query("UPDATE comments SET \
+            content = $1 WHERE post_id = $2 AND comment_id = $3 RETURNING *",
             [content, post_id, comment_id])
         res.json(updateComment.rows[0])
     } catch (error) {
@@ -129,7 +135,7 @@ app.delete("/posts/:id", async (req, res) => {
         const { id } = req.params
         const deleteComments = await pool.query(
             "DELETE FROM comments WHERE post_id = $1",
-            [id])    
+            [id])
         const deletePost = await pool.query(
             "DELETE FROM posts WHERE post_id = $1",
             [id])
@@ -137,7 +143,7 @@ app.delete("/posts/:id", async (req, res) => {
     } catch (error) {
         console.log(error.message)
     }
-    
+
 })
 
 // delete a comment
@@ -149,20 +155,25 @@ app.delete("/posts/:post_id/comments/:comment_id", async (req, res) => {
         const deleteComment = await pool.query(
             "DELETE FROM comments WHERE post_id = $1 AND comment_id = $2;",
             [post_id, comment_id])
+        const decrementCount = await pool.query("UPDATE posts SET \
+            num_comments = num_comments - 1 WHERE post_id = $1 RETURNING *",
+            [post_id])
+
         res.json(`Post comment id delete with id ${comment_id} and post_id \
             ${post_id}`)
     } catch (error) {
         console.log(error.message)
     }
-    
+
 })
 
 // upvote a post
 
-app.put("/posts/:id/upvote", async(req, res) => {
+app.put("/posts/:id/upvote", async (req, res) => {
     try {
         const { id } = req.params
-        const upvotePost = await pool.query("UPDATE posts SET upvotes = upvotes + 1 WHERE post_id = $1 RETURNING *",
+        const upvotePost = await pool.query("UPDATE posts SET \
+            upvotes = upvotes + 1 WHERE post_id = $1 RETURNING *",
             [id])
         res.json(upvotePost.rows[0])
     } catch (error) {
@@ -173,10 +184,11 @@ app.put("/posts/:id/upvote", async(req, res) => {
 
 // downvote a post
 
-app.put("/posts/:id/downvote", async(req, res) => {
+app.put("/posts/:id/downvote", async (req, res) => {
     try {
         const { id } = req.params
-        const upvotePost = await pool.query("UPDATE posts SET downvotes = downvotes + 1 WHERE post_id = $1 RETURNING *",
+        const upvotePost = await pool.query("UPDATE posts SET \
+            downvotes = downvotes + 1 WHERE post_id = $1 RETURNING *",
             [id])
         res.json(upvotePost.rows[0])
     } catch (error) {
@@ -186,10 +198,12 @@ app.put("/posts/:id/downvote", async(req, res) => {
 
 // upvote a comment
 
-app.put("/posts/:post_id/comments/:comment_id/upvote", async(req, res) => {
+app.put("/posts/:post_id/comments/:comment_id/upvote", async (req, res) => {
     try {
         const { post_id, comment_id } = req.params
-        const upvoteComment = await pool.query("UPDATE comments SET upvotes = upvotes + 1 WHERE comment_id = $1 AND post_id = $2 RETURNING *",
+        const upvoteComment = await pool.query("UPDATE comments SET \
+            upvotes = upvotes + 1 WHERE comment_id = $1 AND \
+            post_id = $2 RETURNING *",
             [comment_id, post_id])
         res.json(upvoteComment.rows[0])
     } catch (error) {
@@ -199,10 +213,12 @@ app.put("/posts/:post_id/comments/:comment_id/upvote", async(req, res) => {
 
 // downvote a comment
 
-app.put("/posts/:post_id/comments/:comment_id/downvote", async(req, res) => {
+app.put("/posts/:post_id/comments/:comment_id/downvote", async (req, res) => {
     try {
         const { post_id, comment_id } = req.params
-        const downvoteComment = await pool.query("UPDATE comments SET downvotes = downvotes + 1 WHERE comment_id = $1 AND post_id = $2 RETURNING *",
+        const downvoteComment = await pool.query("UPDATE comments SET \
+            downvotes = downvotes + 1 WHERE comment_id = $1 AND \
+            post_id = $2 RETURNING *",
             [comment_id, post_id])
         res.json(downvoteComment.rows[0])
     } catch (error) {
@@ -216,7 +232,8 @@ app.get("/posts/:id/upvotes", async (req, res) => {
 
     try {
         const { id } = req.params
-        const upvotes = await pool.query("SELECT upvotes FROM posts WHERE post_id = $1",
+        const upvotes = await pool.query("SELECT upvotes FROM posts WHERE \
+            post_id = $1",
             [id]
         )
         res.json(upvotes.rows[0])
@@ -232,7 +249,8 @@ app.get("/posts/:id/downvotes", async (req, res) => {
 
     try {
         const { id } = req.params
-        const downvotes = await pool.query("SELECT downvotes FROM posts WHERE post_id = $1",
+        const downvotes = await pool.query("SELECT downvotes FROM posts WHERE \
+            post_id = $1",
             [id]
         )
         res.json(downvotes.rows[0])
@@ -249,7 +267,8 @@ app.get("/posts/:post_id/comments/:comment_id/upvotes", async (req, res) => {
 
     try {
         const { post_id, comment_id } = req.params
-        const upvotes = await pool.query("SELECT upvotes FROM comments WHERE post_id = $1 AND comment_id = $2",
+        const upvotes = await pool.query("SELECT upvotes FROM comments \
+            WHERE post_id = $1 AND comment_id = $2",
             [post_id, comment_id]
         )
         res.json(upvotes.rows[0])
@@ -262,11 +281,12 @@ app.get("/posts/:post_id/comments/:comment_id/upvotes", async (req, res) => {
 
 // get downvotes from a comment
 
-app.get("/posts/:post_id/comments/:comment_id/upvotes", async (req, res) => {
+app.get("/posts/:post_id/comments/:comment_id/downvotes", async (req, res) => {
 
     try {
         const { post_id, comment_id } = req.params
-        const downvotes = await pool.query("SELECT downvotes FROM comments WHERE post_id = $1 AND comment_id = $2",
+        const downvotes = await pool.query("SELECT downvotes FROM comments \
+            WHERE post_id = $1 AND comment_id = $2",
             [post_id, comment_id]
         )
         res.json(downvotes.rows[0])
@@ -282,7 +302,8 @@ app.get("/posts/:id/comments/count", async (req, res) => {
 
     try {
         const { id } = req.params
-        const num_comments = await pool.query("SELECT num_comments FROM posts WHERE post_id = $1",
+        const num_comments = await pool.query("SELECT num_comments \
+            FROM posts WHERE post_id = $1",
             [id]
         )
         res.json(num_comments.rows[0])

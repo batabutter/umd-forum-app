@@ -24,21 +24,21 @@ export default function App() {
           className="w-[150px] h-[150px] mt-6"
           resizeMode="contain"
         />
-        <Text 
-        className="mt-16 text-center 
+        <Text
+          className="mt-16 text-center 
         font-psemibold text-3xl text-gray-100"
-        style={{
-          textShadowColor: 'rgba(0, 0, 0, 0.9)',
-           textShadowOffset: { width: 5, height: 5 },
-           textShadowRadius: 8
-        }}>
+          style={{
+            textShadowColor: 'rgba(0, 0, 0, 0.9)',
+            textShadowOffset: { width: 5, height: 5 },
+            textShadowRadius: 8
+          }}>
           Welcome to the UMD Course Forum
         </Text>
 
         <DynamicButton
-        text="Continue to Homepage"
-        styleContainer="w-[200px] mt-20"
-        handlePress={() => router.push("/sign-in")}
+          text="Continue to Sign in"
+          styleContainer="w-[200px] mt-20"
+          handlePress={() => router.push("/sign-in")}
         />
       </View>
     </SafeAreaView>
