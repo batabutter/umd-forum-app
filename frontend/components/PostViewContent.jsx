@@ -25,7 +25,7 @@ const PostViewContent = () => {
 
                 </View>
 
-                <View className="min-h-10 mt-5 justify-center flex-row">
+                <View className="min-h-10 mt-5 justify-center flex-row items-center">
 
                     <Text className="px-5 text-gray-100 border border-white rounded-md">
                         Upvotes | Downvote
