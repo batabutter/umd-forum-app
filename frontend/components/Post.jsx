@@ -4,6 +4,7 @@ import React from 'react'
 import "../global.css";
 
 const Post = ({ title, content, upvotes, downvotes, numcomments }) => {
+
     return (
         <TouchableOpacity
             onPress={() => router.push({

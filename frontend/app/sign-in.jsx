@@ -9,7 +9,7 @@ import DynamicButton from "../components/DyanmicButton";
 import { images } from '../constants';
 const SignIn = () => {
   return (
-    <SafeAreaView className="bg-white ">
+    <SafeAreaView className="bg-primary flex-1">
       <View className="items-center">
         <Text className="text-center">
           Sign in 

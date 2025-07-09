@@ -48,6 +48,12 @@ export default function RootLayout() {
         name="homepage"
         options={{
           headerShown: false
+        }}/>
+
+      <Stack.Screen
+        name="postview"
+        options={{
+          headerShown: false
         }}
       />
 
