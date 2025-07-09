@@ -31,12 +31,26 @@ export default function RootLayout() {
 
     <Stack
       screenOptions={{
-        headerShown: false,  
+        headerShown: false,
       }}>
+
       <Stack.Screen name="index"
-          options={{
+        options={{
           headerShown: false
         }} />
+
+      <Stack.Screen name="sign-in"
+        options={{
+          headerShown: false
+        }} />
+
+      <Stack.Screen
+        name="homepage"
+        options={{
+          headerShown: false
+        }}
+      />
+
     </Stack>
 
   )

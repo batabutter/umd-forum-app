@@ -3,9 +3,9 @@ import { Header } from 'react-native-elements'
 import React from 'react'
 
 
-import "../../global.css";
-import Post from '../../components/Post';
-import ListPosts from '../../components/ListPosts';
+import "../global.css";
+import Post from '../components/Post';
+import ListPosts from '../components/ListPosts';
 
 const homepage = () => {
     return (

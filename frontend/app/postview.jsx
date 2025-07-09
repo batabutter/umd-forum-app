@@ -8,7 +8,9 @@ const postview = () => {
   return (
     <SafeAreaView>
       <View>
-        <Text>{post_title}</Text>
+        <Text className="font-pbold ml-6 text-3xl"
+        >
+          {post_title}</Text>
       </View>
     </SafeAreaView>
   )
