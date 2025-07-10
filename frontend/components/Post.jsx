@@ -20,7 +20,7 @@ const Post = ({ title, content, upvotes, downvotes, numcomments }) => {
 
                 </View>
 
-                <View>
+                <View className="mr-10">
                     <Text className="font-pbold text-3xl mb-4">{title}</Text>
 
 
