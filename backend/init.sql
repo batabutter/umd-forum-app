@@ -32,11 +32,13 @@ CREATE TABLE posts (
 CREATE TABLE comments (
     comment_id SERIAL PRIMARY KEY,
     post_id int NOT NULL,
+    account_id INT NOT NULL,
     content varchar(80),
     upvotes numeric DEFAULT 0,
     downvotes numeric DEFAULT 0,
     num_replies numeric DEFAULT 0,
-    CONSTRAINT fk_post FOREIGN KEY (post_id) REFERENCES posts (post_id)
+    CONSTRAINT fk_post FOREIGN KEY (post_id) REFERENCES posts (post_id),
+    CONSTRAINT fk_comment_account FOREIGN KEY (account_id) REFERENCES accounts (account_id)
 );
 
 -- Import

@@ -8,9 +8,18 @@ app.use(cors())
 app.use(express.json())
 
 /*
-
+    
     Overall, if I want to make this app public, I need to secure the backend
+    so that you require account data to make any changes
 
+    Make it so reputation gets changed somehow given an upvote or a downvote
+
+    Add getting number of posts and comments for future use
+
+    Refactor for courses????? (I am not sure exactly what the plan is, but I 
+    think I should get the basics working before I think too far ahead.)
+
+    (I also have to refactor the backend)
 */
 
 // add an account
@@ -20,9 +29,15 @@ app.post("/accounts", async (req, res) => {
     try {
         const { user_name, password } = req.body
 
-        const newAccount = await pool.query(
+        await pool.query(
             "CALL register_user($1, $2)",
             [user_name, password]
+        );
+
+        const newAccount = await pool.query(
+            "SELECT account_id, user_name, reputation, num_posts, \
+            num_comments, created_at FROM accounts WHERE user_name = $1",
+            [user_name]
         );
 
         res.json(newAccount.rows[0])
@@ -74,15 +89,20 @@ app.delete("/accounts", async (req, res) => {
 
 // add a post
 
-app.post("/posts", async (req, res) => {
+app.post("/accounts/:id/posts", async (req, res) => {
 
     try {
+        const { id } = req.params
         const { content, title } = req.body
 
         const newPost = await pool.query(
-            "INSERT INTO posts(title, content) VALUES($1, $2) RETURNING *",
-            [title, content]
+            "INSERT INTO posts(account_id, title, content) VALUES($1, $2, $3) RETURNING *",
+            [id, title, content]
         );
+
+        await pool.query("UPDATE accounts SET \
+            num_posts = num_posts + 1 WHERE account_id = $1 RETURNING *",
+            [id])
 
         res.json(newPost.rows[0])
     } catch (error) {
@@ -93,26 +113,33 @@ app.post("/posts", async (req, res) => {
 
 // add a comment 
 
-app.post("/posts/:id/comments", async (req, res) => {
+app.post("/posts/:post_id/comments/:poster_id",
+    async (req, res) => {
 
-    try {
-        const { id } = req.params
-        const { content } = req.body
+        try {
+            const { post_id, poster_id } = req.params
+            const { content } = req.body
 
-        const newComment = await pool.query(
-            "INSERT INTO comments(post_id, content) VALUES($1, $2) RETURNING *",
-            [id, content]
-        )
-        const incrementCount = await pool.query("UPDATE posts SET \
+            const newComment = await pool.query(
+                "INSERT INTO comments(post_id, account_id, content) \
+                VALUES($1, $2, $3) RETURNING *",
+                [post_id, poster_id, content]
+            )
+
+            await pool.query("UPDATE posts SET \
             num_comments = num_comments + 1 WHERE post_id = $1 RETURNING *",
-            [id])
+                [post_id])
 
-        res.json(newComment.rows[0])
-    } catch (error) {
-        console.log(error.message)
-    }
+            await pool.query("UPDATE posts SET \
+            num_comments = num_comments + 1 WHERE post_id = $1 RETURNING *",
+                [post_id])
 
-})
+            res.json(newComment.rows[0])
+        } catch (error) {
+            console.log(error.message)
+        }
+
+    })
 
 
 // get all posts
@@ -194,17 +221,25 @@ app.put("/posts/:post_id/comments/:comment_id", async (req, res) => {
 
 // delete a post (also deletes all comments for that post)
 
-app.delete("/posts/:id", async (req, res) => {
+app.delete("/accounts/:account_id/posts/:post_id", async (req, res) => {
 
     try {
-        const { id } = req.params
+        const { account_id, post_id } = req.params
+
         const deleteComments = await pool.query(
             "DELETE FROM comments WHERE post_id = $1",
-            [id])
-        const deletePost = await pool.query(
+            [post_id])
+
+        await pool.query(
             "DELETE FROM posts WHERE post_id = $1",
-            [id])
-        res.json(`Post deleted with id ${id}`)
+            [post_id])
+
+        await pool.query(
+            "UPDATE accounts SET \
+            num_posts = num_posts - 1 WHERE account_id = $1 RETURNING *",
+            [account_id]
+        )
+        res.json(`Post deleted with id ${post_id} and account ${account_id}`)
     } catch (error) {
         console.log(error.message)
     }
@@ -213,16 +248,25 @@ app.delete("/posts/:id", async (req, res) => {
 
 // delete a comment
 
-app.delete("/posts/:post_id/comments/:comment_id", async (req, res) => {
+app.delete("/posts/:post_id/comments/:comment_id/accounts/:poster_id", async (req, res) => {
 
     try {
-        const { post_id, comment_id } = req.params
+        const { post_id, comment_id, poster_id } = req.params
+
         const deleteComment = await pool.query(
             "DELETE FROM comments WHERE post_id = $1 AND comment_id = $2;",
             [post_id, comment_id])
-        const decrementCount = await pool.query("UPDATE posts SET \
+
+        if (deleteComment.rowCount == 0)
+            return res.status(404).json({ error: "Comment does not exist"})
+
+        await pool.query("UPDATE posts SET \
             num_comments = num_comments - 1 WHERE post_id = $1 RETURNING *",
             [post_id])
+
+        await pool.query("UPDATE accounts SET \
+            num_comments = num_comments - 1 WHERE account_id = $1 RETURNING *",
+            [poster_id])
 
         res.json(`Post comment id delete with id ${comment_id} and post_id \
             ${post_id}`)
