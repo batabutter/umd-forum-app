@@ -7,6 +7,71 @@ app = express()
 app.use(cors())
 app.use(express.json())
 
+/*
+
+    Overall, if I want to make this app public, I need to secure the backend
+
+*/
+
+// add an account
+
+app.post("/accounts", async (req, res) => {
+
+    try {
+        const { user_name, password } = req.body
+
+        const newAccount = await pool.query(
+            "CALL register_user($1, $2)",
+            [user_name, password]
+        );
+
+        res.json(newAccount.rows[0])
+    } catch (error) {
+        console.log(error.message)
+    }
+
+})
+
+// get all the registered accounts
+
+app.get("/accounts", async (req, res) => {
+
+    try {
+
+        const allAccounts = await pool.query("SELECT account_id, user_name, \
+            reputation, num_posts, num_comments, created_at FROM accounts")
+
+        res.json(allAccounts.rows)
+    } catch (error) {
+        console.log(error.message)
+    }
+
+
+})
+
+// TODO: delete an account (This needs way more security lmao)
+
+/*
+
+app.delete("/accounts", async (req, res) => {
+
+    try {
+        const { user_name, password} = req.body
+
+        const newAccount = await pool.query(
+            "CALL register_user($1, $2)",
+            [user_name, password]
+        );
+
+        res.json(newAccount.rows[0])
+    } catch (error) {
+        console.log(error.message)
+    }
+
+})
+
+*/
+
 // add a post
 
 app.post("/posts", async (req, res) => {
@@ -314,5 +379,5 @@ app.get("/posts/:id/comments/count", async (req, res) => {
 })
 
 app.listen(5000, "0.0.0.0", () => {
-  console.log("Server started on port 5000");
+    console.log("Server started on port 5000");
 });

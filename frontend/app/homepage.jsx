@@ -9,6 +9,8 @@ const homepage = () => {
 
     const [currposts, setCurrPosts] = useState([]);
 
+    // For now, I am just using a placeholder account
+
     const getPosts = async () => {
         try {
             const response = await fetch("http://192.168.1.156:5000/posts")
