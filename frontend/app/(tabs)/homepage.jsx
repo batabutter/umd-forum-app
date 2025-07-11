@@ -2,8 +2,8 @@ import { View, Text, SafeAreaView, FlatList } from 'react-native'
 import React, { useState, useEffect } from 'react';
 import { Header } from 'react-native-elements'
 
-import "../global.css";
-import Post from '../components/Post';
+import "../../global.css";
+import Post from '../../components/Post';
 
 const homepage = () => {
 

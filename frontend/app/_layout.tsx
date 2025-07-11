@@ -45,13 +45,14 @@ export default function RootLayout() {
         }} />
 
       <Stack.Screen
-        name="homepage"
+        name="postview"
         options={{
           headerShown: false
-        }}/>
+        }}
+      />
 
       <Stack.Screen
-        name="postview"
+        name="(tabs)"
         options={{
           headerShown: false
         }}
