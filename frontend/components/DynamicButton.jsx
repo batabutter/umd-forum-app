@@ -6,7 +6,7 @@ const DynamicButton = ({ text, styleContainer, handlePress }) => {
     <TouchableOpacity 
     onPress={handlePress}
     className={`bg-secondary ${styleContainer} justify-center items-center
-    min-h-[62px] rounded-xl`}>
+    min-h-[50px] rounded-xl`}>
       <Text className='font-psemibold text-lg'>{text}</Text>
     </TouchableOpacity>
   )

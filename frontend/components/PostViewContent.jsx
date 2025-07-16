@@ -17,8 +17,6 @@ const PostViewContent = ({ post_id }) => {
     const [comments, setComments] = useState([])
     const [reload, setReload] = useState(false)
 
-    console.log(post_id)
-
     const getComments = async () => {
 
         try {
@@ -115,9 +113,10 @@ const PostViewContent = ({ post_id }) => {
                             onPress={async () => {
 
                                 try {
-                                    const res = await fetch(`http://192.168.1.156:5000/posts/${post_id}/upvote`, {
+                                    const res = await fetch(`http://192.168.1.156:5000/posts/${post_id}/upvote`, 
+                                        {
                                         method: "PUT",
-                                    });
+                                        });
 
                                     setReload(true)
                                 } catch (error) {

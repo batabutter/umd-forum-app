@@ -1,19 +1,16 @@
-import { View, Text } from 'react-native'
-import React, {useEffect, useState} from 'react'
+import { View, Text, TouchableOpacity } from 'react-native'
+import React, { useEffect, useState } from 'react'
 import { SafeAreaView } from 'react-native-safe-area-context'
+import { Header } from 'react-native-elements'
 
-import { CreatePostView }  from '../../components'
+import { CreatePostView, DynamicButton } from '../../components'
 
 const create = () => {
 
   return (
-    <SafeAreaView>
-      <Text>
-        Curr account: 
-      </Text>
-
-      <CreatePostView/>
-    </SafeAreaView>
+    <View>
+      <CreatePostView />
+    </View>
   )
 }
 

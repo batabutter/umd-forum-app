@@ -1,5 +1,6 @@
 import { View, Text, SafeAreaView, FlatList } from 'react-native'
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
+import { useFocusEffect } from 'expo-router';
 import { Header } from 'react-native-elements'
 
 import "../../global.css";
@@ -24,13 +25,16 @@ const homepage = () => {
         }
     }
 
-    useEffect(() => {
-        getPosts()
-    }, [])
-
+    useFocusEffect(
+        useCallback(() => {
+            getPosts()
+            console.log("Rendering homepage...")
+        }, [])
+    )
     const renderList = (postData) => {
 
         if (postData != null && postData.length > 0) {
+
             return (
                 <FlatList
                     data={postData}
@@ -79,7 +83,6 @@ const homepage = () => {
 
     }
 
-    console.log(currposts)
     return (
         <SafeAreaView className="flex-1">
             {renderList(currposts)}
