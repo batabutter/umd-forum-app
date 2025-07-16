@@ -4,10 +4,12 @@ import { Header } from 'react-native-elements'
 
 import "../../global.css";
 import Post from '../../components/Post';
+import { useGlobalContext } from '../../context/GlobalProvider';
 
 const homepage = () => {
 
     const [currposts, setCurrPosts] = useState([]);
+    const { user } = useGlobalContext()
 
     // For now, I am just using a placeholder account
 
@@ -32,14 +34,20 @@ const homepage = () => {
             return (
                 <FlatList
                     data={postData}
-                    ListHeaderComponent={() => (
-                        <Header
-                            leftComponent={{ icon: 'menu', color: '#fff' }}
-                            centerComponent={{ text: 'MY TITLE', style: { color: '#fff' } }}
-                            rightComponent={{ icon: 'home', color: '#fff' }}
-                            backgroundColor='#222831'
-                        />
-                    )}
+                    ListHeaderComponent={() => {
+                        
+                        const { user } = useGlobalContext()
+
+                        return (
+                            <Header
+                                leftComponent={{ icon: 'menu', color: '#fff' }}
+                                centerComponent={{ text: user, style: { color: '#fff' } }}
+                                rightComponent={{ icon: 'home', color: '#fff' }}
+                                backgroundColor='#222831'
+                            />
+                        )
+
+                    }}
 
                     renderItem={({ item }) =>
                         <Post
