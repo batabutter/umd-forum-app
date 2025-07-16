@@ -10,6 +10,9 @@
 
 *Post-Page:*
 ~~  - Make look pretty ~~ 
+- Add option to delete posts
+- Add option to edit posts
+- Test for bugs (make sure only account creator can delete only their posts)
 
 *Not-So Major (Major but to be done later):*
 ~~ - Add botom naviation tabs ~~ ~~ - Make the top header functional ~~
