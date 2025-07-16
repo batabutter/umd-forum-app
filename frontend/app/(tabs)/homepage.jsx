@@ -26,7 +26,7 @@ const homepage = () => {
         getPosts()
     }, [])
 
-    function List({ postData }) {
+    const renderList = (postData) => {
 
         if (postData != null && postData.length > 0) {
             return (
@@ -48,14 +48,20 @@ const homepage = () => {
                             upvotes={item.upvotes}
                             downvotes={item.downvotes}
                             numcomments={item.num_comments}
+                            post_id={item.post_id}
                         />}
-                    
+
                     keyExtractor={item => item.post_id}
                 />
             )
         } else {
             return (
                 <View className="justify-center items-center">
+                    <Header
+                        leftComponent={{ icon: 'menu', color: '#fff' }}
+                        centerComponent={{ text: 'MY TITLE', style: { color: '#fff' } }}
+                        rightComponent={{ icon: 'home', color: '#fff' }}
+                    />
                     <Text className="mt-10 font-pbold">
                         There aren't any posts to show!
                     </Text>
@@ -67,7 +73,9 @@ const homepage = () => {
 
     console.log(currposts)
     return (
-        <List postData={currposts} />
+        <SafeAreaView className="flex-1">
+            {renderList(currposts)}
+        </SafeAreaView>
     )
 }
 

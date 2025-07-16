@@ -3,13 +3,16 @@ import { router } from "expo-router"
 import React from 'react'
 import "../global.css";
 
-const Post = ({ title, content, upvotes, downvotes, numcomments }) => {
+const Post = ({ title, content, upvotes, downvotes, numcomments, post_id}) => {
 
     return (
         <TouchableOpacity
             onPress={() => router.push({
                 pathname: '/postview',
-                params: { post_title: title, post_content: content },
+                params: { post_title: title, post_content: content,
+                    post_upvotes: upvotes, post_downvotes: downvotes,
+                    numcomments: numcomments, post_id: post_id
+                 },
             })}
 
         >
