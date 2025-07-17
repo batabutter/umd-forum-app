@@ -4,6 +4,7 @@ import PostViewContent from "./PostViewContent";
 import Comment from "./Comment";
 import CreatePostView from "./CreatePostView";
 import SwitchAccount from "./SwitchAccountButton";
+import MainPage from "./MainPage";
 
 export {
     DynamicButton,
@@ -11,5 +12,6 @@ export {
     PostViewContent,
     Comment,
     CreatePostView,
-    SwitchAccount
+    SwitchAccount,
+    MainPage
 };

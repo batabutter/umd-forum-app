@@ -7,8 +7,8 @@
 ~~ - Create a default "no posts to show" if there aren't any posts~~
 - Add upvote and downvote buttonst to main page
 - Make the create page redir to homepage when pst created and clears prev details
-- Fix rendering issues where the screen is flashing and it looks like ass
-    - I should probably just make a separate HomePage display component 
+~~- Fix rendering issues where the screen is flashing and it looks like ass~~
+~~    - I should probably just make a separate HomePage display component ~~
 
 *Post-Page:*
 ~~  - Make look pretty ~~ 
