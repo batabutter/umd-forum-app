@@ -64,6 +64,25 @@ app.get("/accounts", async (req, res) => {
 
 })
 
+// Get an account with a specific username (This should maybe be changed?)
+
+app.get("/accounts/:username", async (req, res) => {
+
+    try {
+        const { username } = req.params
+        const accounts = await pool.query("SELECT account_id, user_name, \
+            reputation, num_posts, num_comments, created_at FROM accounts WHERE user_name = $1",
+            [username]
+        )
+
+        res.json(accounts.rows[0])
+    } catch (error) {
+        console.log(error.message)
+    }
+
+
+})
+
 // TODO: delete an account (This needs way more security lmao)
 
 /*

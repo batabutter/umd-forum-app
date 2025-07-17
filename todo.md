@@ -18,6 +18,8 @@
 ~~ - Add botom naviation tabs ~~ ~~ - Make the top header functional ~~
 - Create account View
 - Create functioning sign in and account View
+- Add loading into global context
+- Send 500 for bad server request in backend
 
 *Other:*
 - Fix styling:

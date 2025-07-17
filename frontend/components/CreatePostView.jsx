@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react'
 import { Header } from 'react-native-elements'
 import { useGlobalContext } from '../context/GlobalProvider'
 
-import { DynamicButton } from '../components'
+import DynamicButton from "./DynamicButton"
 
 const CreatePostView = () => {
     const [account, setAccount] = useState([])

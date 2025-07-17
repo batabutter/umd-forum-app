@@ -8,13 +8,15 @@ DROP TABLE comments;
 
 CREATE TABLE accounts (
     account_id SERIAL PRIMARY KEY,
+    post_list_id,
     user_name varchar(80),
     password_salt UUID NOT NULL,
     password_hash text NOT NULL,
     reputation numeric DEFAULT 0,
     num_posts numeric DEFAULT 0,
     num_comments numeric DEFAULT 0,
-    created_at TIMESTAMP DEFAULT NOW()
+    created_at TIMESTAMP DEFAULT NOW(),
+    CONSTRAINT fk_post_list FOREIGN KEY (post_list_id) REFERENCES post_list (post_list_id)
 );
 
 CREATE TABLE posts (
