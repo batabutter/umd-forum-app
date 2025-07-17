@@ -10,6 +10,7 @@ import { useGlobalContext } from '../../context/GlobalProvider';
 const homepage = () => {
 
     const [currposts, setCurrPosts] = useState([]);
+    const [voteRatio, setVoteRatio] = useState({})
     const { user } = useGlobalContext()
 
     // For now, I am just using a placeholder account
@@ -18,8 +19,25 @@ const homepage = () => {
         try {
             const response = await fetch("http://192.168.1.156:5000/posts")
             const jsonData = await response.json()
-
             setCurrPosts(jsonData)
+            await getPostRatios(jsonData)
+        } catch (error) {
+            console.log(error.message)
+        }
+    }
+
+    const getPostRatios = async (postData) => {
+        try {
+
+            const ratios = {}
+            for (const post of postData) {
+                const response = await fetch(`http://192.168.1.156:5000/posts/${post.post_id}/ratio`)
+                const jsonData = await response.json();
+                console.log(jsonData)
+                ratios[post.post_id] = jsonData.sum
+            }
+            setVoteRatio(ratios)
+            console.log(ratios)
         } catch (error) {
             console.log(error.message)
         }
@@ -57,10 +75,9 @@ const homepage = () => {
                         <Post
                             title={item.title}
                             content={item.content}
-                            upvotes={item.upvotes}
-                            downvotes={item.downvotes}
                             numcomments={item.num_comments}
                             post_id={item.post_id}
+                            voteRatio={voteRatio[item.post_id]}
                         />}
 
                     keyExtractor={item => item.post_id}
@@ -73,6 +90,7 @@ const homepage = () => {
                         leftComponent={{ icon: 'menu', color: '#fff' }}
                         centerComponent={{ text: 'MY TITLE', style: { color: '#fff' } }}
                         rightComponent={{ icon: 'home', color: '#fff' }}
+                        backgroundColor='#222831'
                     />
                     <Text className="mt-10 font-pbold">
                         There aren't any posts to show!

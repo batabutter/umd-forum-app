@@ -297,12 +297,14 @@ app.delete("/posts/:post_id/comments/:comment_id/accounts/:poster_id", async (re
 
 // upvote a post
 
-app.put("/posts/:id/upvote", async (req, res) => {
+app.post("/posts/:post_id/upvote/:account_id", async (req, res) => {
     try {
-        const { id } = req.params
-        const upvotePost = await pool.query("UPDATE posts SET \
-            upvotes = upvotes + 1 WHERE post_id = $1 RETURNING *",
-            [id])
+        const { post_id, account_id } = req.params
+
+        const upvotePost = await pool.query("INSERT INTO post_votes(post_id, \
+            account_id, vote_val) VALUES($1, $2, $3) RETURNING *",
+            [post_id, account_id, 1])
+
         res.json(upvotePost.rows[0])
     } catch (error) {
         console.error(error.message)
@@ -312,13 +314,34 @@ app.put("/posts/:id/upvote", async (req, res) => {
 
 // downvote a post
 
-app.put("/posts/:id/downvote", async (req, res) => {
+app.post("/posts/:post_id/downvote/:account_id", async (req, res) => {
     try {
-        const { id } = req.params
-        const upvotePost = await pool.query("UPDATE posts SET \
-            downvotes = downvotes + 1 WHERE post_id = $1 RETURNING *",
-            [id])
-        res.json(upvotePost.rows[0])
+        const { post_id, account_id } = req.params
+
+        const downvotePost = await pool.query("INSERT INTO post_votes(post_id, \
+            account_id, vote_val) VALUES($1, $2, $3) RETURNING *",
+            [post_id, account_id, -1])
+
+        res.json(downvotePost.rows[0])
+    } catch (error) {
+        console.error(error.message)
+    }
+})
+
+// Remove upvote from a post
+
+app.delete("/posts/:post_id/upvote/:account_id", async (req, res) => {
+    try {
+        const { post_id, account_id } = req.params
+
+        const deleteUpvote = await pool.query("DELETE FROM post_votes WHERE \
+            account_id = $1 AND post_id = $2",
+            [account_id, post_id])
+
+        if (deleteUpvote.rowCount == 0)
+            return res.status(404).json({ error: "Upvote does not exist"})
+
+        res.json("Deleted upvote")
     } catch (error) {
         console.error(error.message)
     }
@@ -354,34 +377,27 @@ app.put("/posts/:post_id/comments/:comment_id/downvote", async (req, res) => {
     }
 })
 
-// get upvotes from a post
+// get ratio from a post
 
-app.get("/posts/:id/upvotes", async (req, res) => {
+/*
 
-    try {
-        const { id } = req.params
-        const upvotes = await pool.query("SELECT upvotes FROM posts WHERE \
-            post_id = $1",
-            [id]
-        )
-        res.json(upvotes.rows[0])
-    } catch (error) {
-        console.log(error.message)
-    }
+Create sql function that handles this nonsense
 
-})
+*/
 
-// get downvotes from a post
-
-app.get("/posts/:id/downvotes", async (req, res) => {
+app.get("/posts/:id/ratio", async (req, res) => {
 
     try {
+        
         const { id } = req.params
-        const downvotes = await pool.query("SELECT downvotes FROM posts WHERE \
-            post_id = $1",
+        const upvotes = await pool.query("SELECT SUM(vote_val) FROM post_votes \
+            WHERE post_id = $1",
             [id]
         )
-        res.json(downvotes.rows[0])
+
+        const sum = upvotes.rows[0].sum
+
+        res.json({sum: sum == null ? 0 : sum})
     } catch (error) {
         console.log(error.message)
     }

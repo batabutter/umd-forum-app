@@ -25,10 +25,19 @@ CREATE TABLE posts (
     title varchar(80),
     content varchar(80),
     created_at TIMESTAMP DEFAULT NOW(),
-    upvotes numeric DEFAULT 0,
-    downvotes numeric DEFAULT 0,
     num_comments numeric DEFAULT 0,
     CONSTRAINT fk_account FOREIGN KEY (account_id) REFERENCES accounts (account_id)
+);
+
+CREATE TABLE post_votes (
+    post_vote_id SERIAL PRIMARY KEY,
+    post_id int NOT NULL,
+    account_id int NOT NULL,
+    vote_val numeric DEFAULT 0, 
+    CONSTRAINT fk_post FOREIGN KEY (post_id) REFERENCES posts (post_id),
+    CONSTRAINT fk_account FOREIGN KEY (account_id) REFERENCES accounts (account_id),
+    CONSTRAINT unique_post_vote UNIQUE (post_id, account_id),
+    check (vote_val in (-1, 1))
 );
 
 CREATE TABLE comments (

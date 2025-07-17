@@ -1,13 +1,15 @@
 import { SafeAreaView, View, Text, TouchableOpacity, FlatList } from 'react-native'
 import React, { useState, useEffect } from 'react'
+import { Header } from 'react-native-elements'
 import { useLocalSearchParams } from 'expo-router';
 import EntypoIcon from "react-native-vector-icons/Entypo"
 
 import Comment from "./Comment"
+import { useGlobalContext } from '../context/GlobalProvider';
 
 /*
 
-Remember to change silliness
+This is so hard to read, I need to fix this once I get this working
 
 */
 
@@ -15,7 +17,10 @@ const PostViewContent = ({ post_id }) => {
 
     const [post, setPost] = useState([])
     const [comments, setComments] = useState([])
+    const [ratio, setRatio] = useState(0)
     const [reload, setReload] = useState(false)
+
+    const { user } = useGlobalContext()
 
     const getComments = async () => {
 
@@ -47,12 +52,27 @@ const PostViewContent = ({ post_id }) => {
             console.log(error.message)
         }
     }
+
+    const getRatio = async () => {
+
+        try {
+            const response = await fetch(`http://192.168.1.156:5000/posts/${post_id}/ratio`)
+            const jsonData = await response.json()
+            setRatio(jsonData.sum)
+            setReload(false)
+        } catch (error) {
+            console.log(error.message)
+        }
+    }
+
+
     useEffect(() => {
         getPost()
         getComments()
+        getRatio()
     }, [reload])
 
-    const { title, content, upvotes, downvotes,
+    const { title, content,
         num_comments } = post
 
     const renderComments = () => {
@@ -89,6 +109,13 @@ const PostViewContent = ({ post_id }) => {
 
     return (
         <SafeAreaView>
+            <Header
+                leftComponent={{ icon: 'menu', color: '#fff' }}
+                centerComponent={{ text: user.user_name, style: { color: '#fff' } }}
+                rightComponent={{ icon: 'home', color: '#fff' }}
+                backgroundColor='#222831'
+            />
+
             <View className="px-5">
                 <Text>
                     User name
@@ -111,12 +138,14 @@ const PostViewContent = ({ post_id }) => {
 
                         <TouchableOpacity
                             onPress={async () => {
-
+                                console.log("What > "+user.account_id)
                                 try {
-                                    const res = await fetch(`http://192.168.1.156:5000/posts/${post_id}/upvote`, 
+                                    const res = await fetch(`http://192.168.1.156:5000/posts/${post_id}/upvote/${user.account_id}`,
                                         {
-                                        method: "PUT",
+                                            method: "POST",
                                         });
+                                    if (!res.ok)
+                                        throw new Error(`Server error ${res.status}`)
 
                                     setReload(true)
                                 } catch (error) {
@@ -135,7 +164,7 @@ const PostViewContent = ({ post_id }) => {
 
                         <Text
                             className="px-5 ">
-                            {upvotes - downvotes} |
+                            {ratio} |
                         </Text>
 
                         <TouchableOpacity
@@ -143,11 +172,16 @@ const PostViewContent = ({ post_id }) => {
                             onPress={async () => {
 
                                 try {
-                                    const res = await fetch(`http://192.168.1.156:5000/posts/${post_id}/downvote`, {
-                                        method: "PUT",
-                                    });
-
+                                    const res = await fetch(`http://192.168.1.156:5000/posts/${post_id}/downvote/${user.account_id}`,
+                                        {
+                                            method: "POST",
+                                        });
+                                    if (!res.ok)
+                                        throw new Error(`Server error ${res.status}`)
+                                    
                                     setReload(true)
+
+
                                 } catch (error) {
                                     console.log(error.message)
                                 }
@@ -175,7 +209,7 @@ const PostViewContent = ({ post_id }) => {
                 </View>
 
                 <View className="border border-gray-600 min-h-80 mt-5 rounded-md">
-                        {renderComments()}
+                    {renderComments()}
                 </View>
             </View>
 

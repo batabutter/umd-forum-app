@@ -15,7 +15,7 @@ const CreatePostView = () => {
         try {
             console.log("Posting...")
             if (titleText != "" && bodyText != "") {
-                const response = await fetch(`http://192.168.1.156:5000/accounts/${user.account_id}/posts`,
+                await fetch(`http://192.168.1.156:5000/accounts/${user.account_id}/posts`,
                     {
                         method: "POST",
                         headers: {
@@ -27,6 +27,7 @@ const CreatePostView = () => {
                         })
                     }
                 )
+
             }
 
             console.log("Post created!!!")
