@@ -6,6 +6,7 @@ import EntypoIcon from "react-native-vector-icons/Entypo"
 
 import Comment from "./Comment"
 import { useGlobalContext } from '../context/GlobalProvider';
+import Vote from './Vote';
 
 /*
 
@@ -45,8 +46,6 @@ const PostViewContent = ({ post_id }) => {
             const jsonData = await response.json()
 
             setPost(jsonData)
-
-            console.log("Obatained post data")
             setReload(false)
         } catch (error) {
             console.log(error.message)
@@ -132,81 +131,21 @@ const PostViewContent = ({ post_id }) => {
 
                 </View>
 
-                <View className="min-h-10 mt-5 justify-center flex-row items-center">
 
-                    <View className="border border-gray-600 rounded-md flex-row">
-
-                        <TouchableOpacity
-                            onPress={async () => {
-                                console.log("What > "+user.account_id)
-                                try {
-                                    const res = await fetch(`http://192.168.1.156:5000/posts/${post_id}/upvote/${user.account_id}`,
-                                        {
-                                            method: "POST",
-                                        });
-                                    if (!res.ok)
-                                        throw new Error(`Server error ${res.status}`)
-
-                                    setReload(true)
-                                } catch (error) {
-                                    console.log(error.message)
-                                }
-                            }
-
-                            }
-                        >
-                            <EntypoIcon
-                                name="arrow-bold-up"
-                                size={20}
-                                color="black"
-                            />
-                        </TouchableOpacity>
-
-                        <Text
-                            className="px-5 ">
-                            {ratio} |
-                        </Text>
-
-                        <TouchableOpacity
-
-                            onPress={async () => {
-
-                                try {
-                                    const res = await fetch(`http://192.168.1.156:5000/posts/${post_id}/downvote/${user.account_id}`,
-                                        {
-                                            method: "POST",
-                                        });
-                                    if (!res.ok)
-                                        throw new Error(`Server error ${res.status}`)
-                                    
-                                    setReload(true)
-
-
-                                } catch (error) {
-                                    console.log(error.message)
-                                }
-                            }
-
-                            }
-                        >
-                            <EntypoIcon
-                                name="arrow-bold-down"
-                                size={20}
-                                color="black"
-                            />
-                        </TouchableOpacity>
-
-                    </View>
-
-                    <View>
-
-                        <Text className="px-5 border border-gray-600 rounded-md">
-                            {num_comments} Comments
-                        </Text>
-
-                    </View>
+                <View className="flex-row justify-center items-center mt-5">
+                    <Vote
+                        post_id={post_id}
+                        account_id={user.account_id}
+                        vote_ratio={ratio}
+                        setReload={setReload}
+                    />
+                    <Text className="px-5 border border-gray-600 rounded-md">
+                        {num_comments} Comments
+                    </Text>
 
                 </View>
+
+
 
                 <View className="border border-gray-600 min-h-80 mt-5 rounded-md">
                     {renderComments()}

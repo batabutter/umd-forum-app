@@ -33,7 +33,7 @@ CREATE TABLE post_votes (
     post_vote_id SERIAL PRIMARY KEY,
     post_id int NOT NULL,
     account_id int NOT NULL,
-    vote_val numeric DEFAULT 0, 
+    vote_val numeric DEFAULT 0,
     CONSTRAINT fk_post FOREIGN KEY (post_id) REFERENCES posts (post_id),
     CONSTRAINT fk_account FOREIGN KEY (account_id) REFERENCES accounts (account_id),
     CONSTRAINT unique_post_vote UNIQUE (post_id, account_id),
@@ -111,3 +111,49 @@ BEGIN
     RETURN v_hashed_password;
 END;
 $$ LANGUAGE plpgsql;
+
+CREATE OR REPLACE PROCEDURE vote_post(
+    p_post_id int,
+    p_account_id int,
+    p_vote_val int)
+LANGUAGE plpgsql
+AS
+$$
+DECLARE
+    curr_vote int;
+BEGIN
+    -- Check null
+    IF (p_post_id IS NULL OR p_account_id IS NULL) THEN
+        RAISE EXCEPTION 'Post id or account id is invalid';
+    END IF;
+
+    -- Make sure you're only downvoting or upvoting a post
+    IF (p_vote_val <> 1 AND p_vote_val <> -1) THEN
+        RAISE EXCEPTION 'vote_val is invalid';
+    END IF;
+
+    -- Check if the vote already exists and is the same value as what you
+        -- giving. If it is. Delete the vote.
+    SELECT vote_val INTO curr_vote 
+    FROM post_votes 
+    WHERE post_id = p_post_id AND account_id=p_account_id;
+
+    IF (FOUND AND curr_vote = p_vote_val) THEN
+        DELETE FROM post_votes
+        WHERE post_id=p_post_id AND account_id=p_account_id;
+
+    ELSE
+
+        -- Otherwise, update the upvote with a downvote, or vice versa
+        INSERT INTO post_votes(post_id, account_id, vote_val) 
+        VALUES(
+            p_post_id, 
+            p_account_id,
+            p_vote_val
+        )
+        ON CONFLICT (post_id, account_id)
+        DO UPDATE SET vote_val=p_vote_val;
+
+    END IF;
+END;
+$$;

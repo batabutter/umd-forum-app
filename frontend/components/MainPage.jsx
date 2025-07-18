@@ -36,7 +36,6 @@ const MainPage = () => {
                 ratios[post.post_id] = jsonData.sum
             }
             setVoteRatio(ratios)
-            console.log(ratios)
         } catch (error) {
             console.log(error.message)
         }
@@ -48,6 +47,7 @@ const MainPage = () => {
             console.log("Rendering homepage...")
         }, [])
     )
+    
     const renderList = (postData) => {
 
         if (postData != null && postData.length > 0) {

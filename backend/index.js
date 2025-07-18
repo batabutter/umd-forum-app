@@ -8,18 +8,7 @@ app.use(cors())
 app.use(express.json())
 
 /*
-    
-    Overall, if I want to make this app public, I need to secure the backend
-    so that you require account data to make any changes
-
-    Make it so reputation gets changed somehow given an upvote or a downvote
-
-    Add getting number of posts and comments for future use
-
-    Refactor for courses????? (I am not sure exactly what the plan is, but I 
-    think I should get the basics working before I think too far ahead.)
-
-    (I also have to refactor the backend)
+    Make the style more consistent PLEASE
 */
 
 // add an account
@@ -149,9 +138,6 @@ app.post("/posts/:post_id/comments/:poster_id",
             num_comments = num_comments + 1 WHERE post_id = $1 RETURNING *",
                 [post_id])
 
-            await pool.query("UPDATE posts SET \
-            num_comments = num_comments + 1 WHERE post_id = $1 RETURNING *",
-                [post_id])
 
             res.json(newComment.rows[0])
         } catch (error) {
@@ -301,11 +287,20 @@ app.post("/posts/:post_id/upvote/:account_id", async (req, res) => {
     try {
         const { post_id, account_id } = req.params
 
-        const upvotePost = await pool.query("INSERT INTO post_votes(post_id, \
-            account_id, vote_val) VALUES($1, $2, $3) RETURNING *",
+        await pool.query(
+            "CALL vote_post($1, $2, $3)",
             [post_id, account_id, 1])
 
-        res.json(upvotePost.rows[0])
+        const upvotePost = await pool.query(
+            "SELECT * FROM post_votes \
+            WHERE post_id=$1 AND account_id=$2",
+            [post_id, account_id]
+        )
+
+        if (upvotePost.rows[0])
+            res.json(upvotePost.rows);
+        else
+            res.json("Post upvote removed!")
     } catch (error) {
         console.error(error.message)
     }
@@ -318,30 +313,58 @@ app.post("/posts/:post_id/downvote/:account_id", async (req, res) => {
     try {
         const { post_id, account_id } = req.params
 
-        const downvotePost = await pool.query("INSERT INTO post_votes(post_id, \
-            account_id, vote_val) VALUES($1, $2, $3) RETURNING *",
+        await pool.query(
+            "CALL vote_post($1, $2, $3)",
             [post_id, account_id, -1])
 
-        res.json(downvotePost.rows[0])
+        const downvotePost = await pool.query(
+            "SELECT * FROM post_votes \
+            WHERE post_id=$1 AND account_id=$2",
+            [post_id, account_id]
+        )
+
+
+        if (downvotePost.rows[0])
+            res.json(downvotePost.rows);
+        else
+            res.json("Post downvote removed!")
     } catch (error) {
         console.error(error.message)
     }
 })
 
-// Remove upvote from a post
+// check if a vote is upvoted or downvoted
 
-app.delete("/posts/:post_id/upvote/:account_id", async (req, res) => {
+app.get("/posts/:post_id/vote/:account_id", async (req, res) => {
     try {
         const { post_id, account_id } = req.params
 
-        const deleteUpvote = await pool.query("DELETE FROM post_votes WHERE \
-            account_id = $1 AND post_id = $2",
-            [account_id, post_id])
+        const json = {
+            upvoted: false,
+            downvoted: false
+        }
 
-        if (deleteUpvote.rowCount == 0)
-            return res.status(404).json({ error: "Upvote does not exist"})
+        const upvotePost = await pool.query(
+            "SELECT * FROM post_votes \
+            WHERE post_id=$1 AND account_id=$2 AND vote_val=1",
+            [post_id, account_id]
+        )
 
-        res.json("Deleted upvote")
+        console.log(upvotePost.rows[0])
+
+        const downvotePost = await pool.query(
+            "SELECT * FROM post_votes \
+            WHERE post_id=$1 AND account_id=$2 AND vote_val=-1",
+            [post_id, account_id]
+        )
+
+        if (upvotePost.rowCount > 0)
+            json["upvoted"] = true
+        else if(downvotePost.rowCount > 0)
+            json["downvoted"] = true
+
+
+        res.json(json);
     } catch (error) {
         console.error(error.message)
     }

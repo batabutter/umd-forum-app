@@ -24,6 +24,7 @@
 - Create functioning sign in and account View
 - Add loading into global context
 - Send 500 for bad server request in backend
+- Make headers work
 
 *Other:*
 - Fix styling:
