@@ -5,12 +5,13 @@ import { useLocalSearchParams } from 'expo-router';
 import PostViewContent from '../components/PostViewContent';
 
 const postview = () => {
-  const { post_id } = useLocalSearchParams();
+  const { postId } = useLocalSearchParams();
+
 
   return (
     <View className="flex-1" >      
       <PostViewContent
-        post_id={post_id}
+        postId={postId}
       />
 
     </View>

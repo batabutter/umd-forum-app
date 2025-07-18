@@ -6,7 +6,7 @@ import EntypoIcon from "react-native-vector-icons/Entypo"
 
 import Comment from "./Comment"
 import { useGlobalContext } from '../context/GlobalProvider';
-import Vote from './Vote';
+import Vote from './VoteBar';
 
 /*
 
@@ -14,7 +14,7 @@ This is so hard to read, I need to fix this once I get this working
 
 */
 
-const PostViewContent = ({ post_id }) => {
+const PostViewContent = ({ postId }) => {
 
     const [post, setPost] = useState([])
     const [comments, setComments] = useState([])
@@ -27,7 +27,7 @@ const PostViewContent = ({ post_id }) => {
 
         try {
 
-            const response = await fetch(`http://192.168.1.156:5000/posts/${post_id}/comments`)
+            const response = await fetch(`http://192.168.1.156:5000/posts/${postId}/comments`)
             const jsonData = await response.json()
 
             setComments(jsonData)
@@ -41,7 +41,7 @@ const PostViewContent = ({ post_id }) => {
     const getPost = async () => {
 
         try {
-            const response = await fetch(`http://192.168.1.156:5000/posts/${post_id}`)
+            const response = await fetch(`http://192.168.1.156:5000/posts/${postId}`)
 
             const jsonData = await response.json()
 
@@ -55,7 +55,7 @@ const PostViewContent = ({ post_id }) => {
     const getRatio = async () => {
 
         try {
-            const response = await fetch(`http://192.168.1.156:5000/posts/${post_id}/ratio`)
+            const response = await fetch(`http://192.168.1.156:5000/posts/${postId}/ratio`)
             const jsonData = await response.json()
             setRatio(jsonData.sum)
             setReload(false)
@@ -87,7 +87,7 @@ const PostViewContent = ({ post_id }) => {
                             upvotes={item.upvotes}
                             downvotes={item.downvotes}
                             num_replies={item.num_replies}
-                            post_id={item.post_id}
+                            postId={item.postId}
                         />
                     }
 
@@ -134,10 +134,9 @@ const PostViewContent = ({ post_id }) => {
 
                 <View className="flex-row justify-center items-center mt-5">
                     <Vote
-                        post_id={post_id}
-                        account_id={user.account_id}
-                        vote_ratio={ratio}
-                        setReload={setReload}
+                        postId={postId}
+                        accountId={user.account_id}
+                        voteRatio={ratio}
                     />
                     <Text className="px-5 border border-gray-600 rounded-md">
                         {num_comments} Comments
