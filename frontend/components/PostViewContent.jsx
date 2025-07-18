@@ -137,6 +137,7 @@ const PostViewContent = ({ postId }) => {
                         postId={postId}
                         accountId={user.account_id}
                         voteRatio={ratio}
+                        styleContainer={"w-[100px]"}
                     />
                     <Text className="px-5 border border-gray-600 rounded-md">
                         {num_comments} Comments
