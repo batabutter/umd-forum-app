@@ -120,18 +120,54 @@ app.post("/accounts/:id/posts", async (req, res) => {
 })
 
 
-// get all posts
+// get a certain number of posts from the list of all posts
 
-app.get("/posts", async (req, res) => {
+app.get("/getPosts/:limit", async (req, res) => {
 
     try {
-        const allPosts = await pool.query("SELECT * FROM posts")
-        res.json(allPosts.rows)
+        const { limit } = req.params
+
+        const posts = await pool.query(`SELECT * FROM posts LIMIT $1`,
+            [limit]
+        )
+        res.json(posts.rows)
     } catch (error) {
         console.log(error.message)
     }
 
 })
+
+// get next 6 posts starting from an offset
+
+app.get("/getPosts/:limit/:offset", async (req, res) => {
+
+    try {
+
+        const { limit, offset } = req.params
+
+        const posts = await pool.query(`SELECT * FROM posts LIMIT $1 OFFSET $2`,
+            [limit, offset]
+        )
+        res.json(posts.rows)
+    } catch (error) {
+        console.log(error.message)
+    }
+
+})
+
+// Get the total number of posts
+
+app.get("/count/posts", async (req, res) => {
+
+    try {
+        const numPosts = await pool.query(`SELECT COUNT(*) FROM posts`)
+        res.json(numPosts.rows[0].count)
+    } catch (error) {
+        console.log(error.message)
+    }
+
+})
+
 
 // get a specifc post
 

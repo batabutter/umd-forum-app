@@ -5,10 +5,21 @@ import React, { useEffect, useState } from 'react'
 import "../global.css";
 import Vote from './VoteBar';
 import { useGlobalContext } from '../context/GlobalProvider';
+import { LoadingSpin } from '../context/LoadingProvider';
 
 const Post = ({ title, content, numcomments, postId }) => {
 
     const { user } = useGlobalContext()
+    const [isLoading, setIsLoading] = useState(false)
+    const [voteBarReady, setVoteBarReady] = useState(true)
+
+    if (!voteBarReady) {
+        return (
+            <LoadingSpin 
+                styleContainer={{ width: 100, height: 100 }}
+            />
+        )
+    }
 
     return (
         <TouchableOpacity
@@ -34,6 +45,7 @@ const Post = ({ title, content, numcomments, postId }) => {
                         postId={postId}
                         accountId={user.account_id}
                         styleContainer={"w-[100px]"}
+                        onRender={() => setVoteBarReady(true)}
                     />
                 </View>
 

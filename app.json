@@ -1,0 +1,12 @@
+{
+  "expo": {
+    "extra": {
+      "eas": {
+        "projectId": "4403424e-32dd-4114-8c67-5de30be45a26"
+      }
+    },
+    "android": {
+      "package": "com.batabutter.umdforumapp"
+    }
+  }
+}

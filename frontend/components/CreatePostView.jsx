@@ -1,7 +1,8 @@
-import { View, Text, TextInput } from 'react-native'
+import { View, Text, TextInput, TouchableOpacity } from 'react-native'
 import React, { useEffect, useState } from 'react'
-import { Header } from 'react-native-elements'
+import { Header, Icon } from 'react-native-elements'
 import { useGlobalContext } from '../context/GlobalProvider'
+import { router, useNavigation } from "expo-router"
 
 import DynamicButton from "./DynamicButton"
 
@@ -10,6 +11,7 @@ const CreatePostView = () => {
     const [titleText, setTitleText] = useState("")
     const [bodyText, setBodytext] = useState("")
     const { user } = useGlobalContext()
+    const navigation =  useNavigation()
 
     const publishPost = async (title, body) => {
         try {
@@ -29,12 +31,28 @@ const CreatePostView = () => {
                 )
 
             }
-
+            router.push(`/(home)/homepage`)
             console.log("Post created!!!")
+            
 
         } catch (error) {
             console.log(error.message)
         }
+    }
+
+    useEffect(() => {
+        navigation.setOptions({
+            tabBarStyle: { display: 'none' }
+        })
+    }, [navigation])
+
+    const CloseButton = () => {
+        return (
+            <TouchableOpacity
+                onPress={() => router.push(`/(home)/homepage`)}>
+                    <Icon name="close" size={24} color="#fff"/>
+            </TouchableOpacity>
+        )
     }
 
     return (
@@ -43,7 +61,7 @@ const CreatePostView = () => {
             <View>
 
                 <Header
-                    leftComponent={{ icon: 'close', color: '#fff' }}
+                    leftComponent={<CloseButton />}
                     centerComponent={{ text: "", style: { color: '#fff' } }}
                     rightComponent={
                         <DynamicButton
