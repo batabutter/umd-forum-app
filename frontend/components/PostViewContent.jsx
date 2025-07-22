@@ -79,9 +79,11 @@ const PostViewContent = ({ postId }) => {
 
     if (isLoading) {
         return (
-            <LoadingSpin 
-                styleContainer={{ width: 50, height: 50 }}
-            />
+            <View className="flex-1 items-center justify-center">
+                <LoadingSpin
+                    styleContainer={{ width: 50, height: 50 }}
+                />
+            </View>
         )
 
     }
