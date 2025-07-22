@@ -1,0 +1,6 @@
+{
+  "dependencies": {
+    "directory": "^0.1.0",
+    "react-native-vector-icons": "^10.2.0"
+  }
+}
