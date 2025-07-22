@@ -3,6 +3,7 @@ import { SplashScreen, Stack } from "expo-router";
 import { useEffect } from 'react';
 
 import GlobalProvider from "../context/GlobalProvider"
+import LoadingProvider from "../context/LoadingProvider"
 import { StatusBar } from 'react-native';
 
 
@@ -33,37 +34,40 @@ export default function RootLayout() {
   return (
 
     <GlobalProvider>
+      <LoadingProvider>
 
-      <Stack
-        screenOptions={{
-          headerShown: false,
-        }}>
 
-        <Stack.Screen name="index"
-          options={{
-            headerShown: false
-          }} />
+        <Stack
+          screenOptions={{
+            headerShown: false,
+          }}>
 
-        <Stack.Screen name="sign-in"
-          options={{
-            headerShown: false
-          }} />
+          <Stack.Screen name="index"
+            options={{
+              headerShown: false
+            }} />
 
-        <Stack.Screen
-          name="(postview)"
-          options={{
-            headerShown: false
-          }}
-        />
+          <Stack.Screen name="sign-in"
+            options={{
+              headerShown: false
+            }} />
 
-        <Stack.Screen
-          name="(home)"
-          options={{
-            headerShown: false
-          }}
-        />
+          <Stack.Screen
+            name="(postview)"
+            options={{
+              headerShown: false
+            }}
+          />
 
-      </Stack>
+          <Stack.Screen
+            name="(home)"
+            options={{
+              headerShown: false
+            }}
+          />
+
+        </Stack>
+      </LoadingProvider>
     </GlobalProvider>
   )
 }

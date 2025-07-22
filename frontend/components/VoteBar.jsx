@@ -1,20 +1,19 @@
 import { View, Text, TouchableOpacity } from 'react-native'
-import React, { useState, useCallback } from 'react'
+import { useState, useCallback } from 'react'
 import EntypoIcon from "react-native-vector-icons/Entypo"
 import { useFocusEffect } from 'expo-router';
-import { useEffect } from 'react'
+import { useLoadingContext, LoadingSpin } from '../context/LoadingProvider';
 
-const Vote = ({ postId, accountId, styleContainer, isComment }) => {
+const Vote = ({ postId, accountId, styleContainer, isComment, onRender }) => {
 
     const [upvoted, setUpvoted] = useState(false)
     const [downvoted, setDownvoted] = useState(false)
     const [voteRatio, setVoteRatio] = useState()
+    const [rendered, setRendered] = useState(false)
 
     const vote = async (upvote) => {
 
-
         try {
-
 
             let vote = upvote ? "upvote" : "downvote"
             const url = isComment ?
@@ -39,6 +38,10 @@ const Vote = ({ postId, accountId, styleContainer, isComment }) => {
 
     const fetchVoteData = useCallback(async () => {
         try {
+
+            
+
+
             const votedStatusUrl = isComment ?
                 `http://192.168.1.156:5000/comments/${postId}/vote/${accountId}`
                 : `http://192.168.1.156:5000/posts/${postId}/vote/${accountId}`
@@ -59,17 +62,21 @@ const Vote = ({ postId, accountId, styleContainer, isComment }) => {
             setDownvoted(jsonStatusData.downvoted)
             setVoteRatio(jsonRatioData.sum)
 
+            if (typeof onRender === 'function') {
+                onRender(true)
+                setRendered(true)
+            }
+
         } catch (error) {
             console.log(error.message)
         }
-    }, [postId, accountId, isComment])
+    }, [postId, accountId, isComment, onRender])
 
     useFocusEffect(
         useCallback(() => {
             fetchVoteData()
         }, [fetchVoteData])
     )
-
 
     return (
         <View className={`justify-between flex-row items-center ${styleContainer} border border-gray-600 rounded-md`}>

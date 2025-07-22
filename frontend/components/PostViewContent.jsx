@@ -3,15 +3,19 @@ import React, { useState, useEffect, useCallback } from 'react'
 import { Header } from 'react-native-elements'
 import { useFocusEffect, useLocalSearchParams } from 'expo-router';
 import EntypoIcon from "react-native-vector-icons/Entypo"
-
-import Comment from "./Comment/Comment"
 import { useGlobalContext } from '../context/GlobalProvider';
 import Vote from './VoteBar';
-import BottomCommentBar from './Comment/BottomCommentBar';
+import Comment from "./comment/Comment"
+import BottomCommentBar from './comment/BottomCommentBar';
+import { useLoadingContext, LoadingSpin } from '../context/LoadingProvider';
+import CommentList from './comment/CommentList';
 
 /*
 
-This is so hard to read, I need to fix this once I get this working
+Maybe create separate usestate for loading comments because I think it makes 
+sense to do that separately
+
+ I really need to create a coment list component
 
 */
 
@@ -21,41 +25,44 @@ const PostViewContent = ({ postId }) => {
     const [comments, setComments] = useState([])
     const [ratio, setRatio] = useState(0)
 
-    const [loadComments, setLoadComments] = useState(false)
-
     const { user } = useGlobalContext()
+    const { isLoading, setIsLoading } = useLoadingContext()
 
 
     useFocusEffect(
         useCallback(() => {
 
             let isActive = true
-
             const fetchData = async () => {
                 try {
+                    setIsLoading(true)
 
-                    const responseComments = await fetch(`http://192.168.1.156:5000/posts/${postId}/comments`)
-                    const jsonDataComments = await responseComments.json()
+                    const [resComments, resPost, resRatio] = await Promise.all([
+                        fetch(`http://192.168.1.156:5000/posts/${postId}/comments`),
+                        fetch(`http://192.168.1.156:5000/posts/${postId}`),
+                        fetch(`http://192.168.1.156:5000/posts/${postId}/ratio`),
+                    ]);
 
-                    if (isActive)
-                        setComments(jsonDataComments)
+                    if (!resComments.ok || !resPost.ok || !resRatio.ok) {
+                        throw new Error("One or more fetches failed");
+                    }
 
-                    const responsePost = await fetch(`http://192.168.1.156:5000/posts/${postId}`)
-                    const jsonDataPost = await responsePost.json()
+                    const jsonComments = await resComments.json();
+                    const jsonPost = await resPost.json();
+                    const jsonRatio = await resRatio.json();
 
-                    if (isActive)
-                        setPost(jsonDataPost)
-
-                    const responseRatio = await fetch(`http://192.168.1.156:5000/posts/${postId}/ratio`)
-                    const jsonDataRatio = await responseRatio.json()
-
-                    if (isActive)
-                        setRatio(jsonDataRatio.sum)
+                    if (isActive) {
+                        setComments(jsonComments);
+                        setPost(jsonPost);
+                        setRatio(jsonRatio.sum);
+                    }
 
 
 
                 } catch (error) {
                     console.log(error.message)
+                } finally {
+                    setIsLoading(false)
                 }
             }
 
@@ -70,40 +77,12 @@ const PostViewContent = ({ postId }) => {
     const { title, content,
         num_comments } = post
 
-    const RenderComments = () => {
-
-        if (comments != null && comments.length > 0) {
-            return (
-                <View className="mt-5 rounded-md flex-1 max-h-96">
-
-                    <FlatList
-                        data={comments}
-
-                        renderItem={({ item }) =>
-                            <Comment
-                                content={item.content}
-                                upvotes={item.upvotes}
-                                downvotes={item.downvotes}
-                                num_replies={item.num_replies}
-                                commentId={item.comment_id}
-                            />
-                        }
-
-                        keyExtractor={item => item.comment_id}
-                    />
-
-                </View>
-
-            )
-        } else {
-            return (
-                <View className="justify-center items-center border border-gray-600 min-h-80 mt-5 rounded-md">
-                    <Text className="mt-10 font-pbold">
-                        There aren't any comments to show!
-                    </Text>
-                </View>
-            )
-        }
+    if (isLoading) {
+        return (
+            <LoadingSpin 
+                styleContainer={{ width: 50, height: 50 }}
+            />
+        )
 
     }
 
@@ -136,7 +115,7 @@ const PostViewContent = ({ postId }) => {
                 </View>
 
 
-                <View className="flex-row justify-center items-center mt-5">
+                <View className="flex-row justify-center items-center mt-5 gap-2">
                     <Vote
                         postId={postId}
                         accountId={user.account_id}
@@ -150,7 +129,9 @@ const PostViewContent = ({ postId }) => {
 
                 </View>
 
-                <RenderComments />
+                <CommentList
+                    comments={comments}
+                />
 
                 <BottomCommentBar
                     postId={postId}
