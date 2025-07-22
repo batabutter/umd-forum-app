@@ -11,15 +11,15 @@ const Post = ({ title, content, numcomments, postId }) => {
 
     const { user } = useGlobalContext()
     const [isLoading, setIsLoading] = useState(false)
-    const [voteBarReady, setVoteBarReady] = useState(true)
 
-    if (!voteBarReady) {
+    if (isLoading) {
         return (
             <LoadingSpin 
                 styleContainer={{ width: 100, height: 100 }}
             />
         )
     }
+    
 
     return (
         <TouchableOpacity
@@ -45,7 +45,7 @@ const Post = ({ title, content, numcomments, postId }) => {
                         postId={postId}
                         accountId={user.account_id}
                         styleContainer={"w-[100px]"}
-                        onRender={() => setVoteBarReady(true)}
+                        postType={"posts"}
                     />
                 </View>
 

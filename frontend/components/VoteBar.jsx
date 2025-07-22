@@ -4,7 +4,11 @@ import EntypoIcon from "react-native-vector-icons/Entypo"
 import { useFocusEffect } from 'expo-router';
 import { useLoadingContext, LoadingSpin } from '../context/LoadingProvider';
 
-const Vote = ({ postId, accountId, styleContainer, isComment, onRender }) => {
+const VALID_POST_TYPES = [
+    "posts", "comments", "replies"
+]
+
+const Vote = ({ postId, accountId, styleContainer, postType }) => {
 
     const [upvoted, setUpvoted] = useState(false)
     const [downvoted, setDownvoted] = useState(false)
@@ -16,9 +20,8 @@ const Vote = ({ postId, accountId, styleContainer, isComment, onRender }) => {
         try {
 
             let vote = upvote ? "upvote" : "downvote"
-            const url = isComment ?
-                `http://192.168.1.156:5000/comments/${postId}/${vote}/${accountId}`
-                : `http://192.168.1.156:5000/posts/${postId}/${vote}/${accountId}`
+
+                `http://192.168.1.156:5000/${postType}/${postId}/${vote}/${accountId}`
 
             const res = await fetch(url, { method: "POST" });
 
@@ -39,15 +42,8 @@ const Vote = ({ postId, accountId, styleContainer, isComment, onRender }) => {
     const fetchVoteData = useCallback(async () => {
         try {
 
-            
-
-
-            const votedStatusUrl = isComment ?
-                `http://192.168.1.156:5000/comments/${postId}/vote/${accountId}`
-                : `http://192.168.1.156:5000/posts/${postId}/vote/${accountId}`
-            const ratioUrl = isComment ?
-                `http://192.168.1.156:5000/comments/${postId}/ratio`
-                : `http://192.168.1.156:5000/posts/${postId}/ratio`
+            const votedStatusUrl = `http://192.168.1.156:5000/${postType}/${postId}/vote/${accountId}`
+            const ratioUrl = `http://192.168.1.156:5000/${postType}/${postId}/ratio`
 
             const resVoteStatus = await fetch(votedStatusUrl);
             const resRatio = await fetch(ratioUrl);
@@ -62,18 +58,15 @@ const Vote = ({ postId, accountId, styleContainer, isComment, onRender }) => {
             setDownvoted(jsonStatusData.downvoted)
             setVoteRatio(jsonRatioData.sum)
 
-            if (typeof onRender === 'function') {
-                onRender(true)
-                setRendered(true)
-            }
-
         } catch (error) {
             console.log(error.message)
         }
-    }, [postId, accountId, isComment, onRender])
+    }, [postId, accountId, postType])
 
     useFocusEffect(
         useCallback(() => {
+            if (!VALID_POST_TYPES.includes(postType))
+                throw new Error("Invalid post type. Post type must be a \'posts\' \'comments\' or \'replies\'")
             fetchVoteData()
         }, [fetchVoteData])
     )

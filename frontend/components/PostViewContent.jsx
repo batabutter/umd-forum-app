@@ -27,6 +27,7 @@ const PostViewContent = ({ postId }) => {
 
     const { user } = useGlobalContext()
     const { isLoading, setIsLoading } = useLoadingContext()
+    const [voteBarReady, setVoteBarReady] = useState(true)
 
 
     useFocusEffect(
@@ -77,7 +78,7 @@ const PostViewContent = ({ postId }) => {
     const { title, content,
         num_comments } = post
 
-    if (isLoading) {
+    if (isLoading || !voteBarReady) {
         return (
             <View className="flex-1 items-center justify-center">
                 <LoadingSpin
@@ -123,7 +124,7 @@ const PostViewContent = ({ postId }) => {
                         accountId={user.account_id}
                         voteRatio={ratio}
                         styleContainer={"w-[100px]"}
-                        isComment={false}
+                        postType={"posts"}
                     />
                     <Text className="px-5 border border-gray-600 rounded-md">
                         {num_comments} Comments

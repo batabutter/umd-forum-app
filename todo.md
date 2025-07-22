@@ -13,6 +13,7 @@
 - Add option to edit posts
 - Make headers work (buttons)
 - Make it so posting comments or posts redirects to home page for now
+- Add loading
 
 *Post-Page:*
 ~~  - Make look pretty ~~ 

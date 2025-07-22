@@ -10,7 +10,6 @@ const Comment = ({ title, content, upvotes, downvotes, num_replies, commentId })
 
     const { user } = useGlobalContext()
     const [isLoading, setIsLoading] = useState(false)
-    const [voteBarReady, setVoteBarReady] = useState(true)
     useEffect(() => {
 
         let isActive = true
@@ -33,13 +32,13 @@ const Comment = ({ title, content, upvotes, downvotes, num_replies, commentId })
             }
         }
         getPoster()
-
         return () => {
             isActive = false
         }
+
     }, [commentId])
 
-    if (isLoading || !voteBarReady) {
+    if (isLoading) {
         return (
             <LoadingSpin
                 styleContainer={{ width: 30, height: 30 }}
@@ -65,13 +64,14 @@ const Comment = ({ title, content, upvotes, downvotes, num_replies, commentId })
                 </View>
 
                 <View className="justify-end items-end flex-row">
+                    
                     <Vote
                         postId={commentId}
                         accountId={user.account_id}
                         styleContainer={"w-[100px]"}
-                        isComment={true}
-                        onRender={setVoteBarReady}
+                        postType={"comments"}
                     />
+
                 </View>
 
             </View>
