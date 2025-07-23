@@ -5,13 +5,12 @@ import { Header } from 'react-native-elements'
 
 import Post from "./Post"
 import { useGlobalContext } from '../context/GlobalProvider';
-import { LoadingSpin } from '../context/LoadingProvider';
+import { useLoadingContext, LoadingSpin } from '../context/LoadingProvider';
 
 /*
 
-There should really be a list posts component to handle loading 
-
-Goal: Make it so main page only shows 6 posts at onces, loads more when needed
+Update in the future to handle and load the number of popular posts, 
+but the numposts logic is a great start
 
 */
 
@@ -21,15 +20,27 @@ const MainPage = () => {
 
     const [currposts, setCurrPosts] = useState([]);
     const { user } = useGlobalContext()
-    const [postCount, setPostCount] = useState(NUM_POSTS_TO_LOAD)
+    const [loadedPostOffset, setLoadedPostOffset] = useState(0)
+    const [totalPostCount, setTotalPostCount] = useState(0)
+    const { isLoading, setIsLoading } = useLoadingContext()
 
     // For now, I am just using a placeholder account
 
     const getPosts = async () => {
         try {
-            const response = await fetch(`http://192.168.1.156:5000/getPosts/${postCount}`)
+            const response = await fetch(`http://192.168.1.156:5000/getPosts/${NUM_POSTS_TO_LOAD}/${loadedPostOffset}`)
+
+            if (!response.ok)
+                        throw new Error(`Server error ${response.status}`)
+
             const jsonData = await response.json()
-            setCurrPosts(jsonData)
+            /*
+                Check to make sure you're not appending the own list
+            */
+            if (loadedPostOffset != 0 && jsonData.length != 0) {
+                setCurrPosts(currposts => [...currposts, ...jsonData])
+            }
+
         } catch (error) {
             console.log(error.message)
         }
@@ -37,13 +48,60 @@ const MainPage = () => {
 
     useFocusEffect(
         useCallback(() => {
-            setPostCount(6)
+            let isActive = true
+
+            const fetchInital = async () => {
+                setIsLoading(true)
+                try {
+                    const resPost = await fetch(`http://192.168.1.156:5000/getPosts/6`)
+                    const jsonDataPost = await resPost.json()
+
+                    if (!resPost.ok)
+                        throw new Error(`Server error ${resPost.status}`)
+
+                    const resNumPosts = await fetch(`http://192.168.1.156:5000/count/posts`)
+                    const jsonDataCount = await resNumPosts.json()
+
+                    if (!resNumPosts.ok)
+                        throw new Error(`Sever error ${resNumPosts.status}`)
+
+                    if (isActive) {
+                        setCurrPosts(jsonDataPost)
+                        setTotalPostCount(jsonDataCount.count)
+                        setLoadedPostOffset(0)
+                    }
+
+
+                } catch (error) {
+                    console.log(error.message)
+                } finally {
+                    setIsLoading(false)
+                }
+            }
+            fetchInital()
+            
+            return () => {
+                isActive = false;
+            };
+
         }, [])
     )
 
     useEffect(() => {
         getPosts()
-    }, [postCount])
+    }, [loadedPostOffset])
+
+    if (isLoading) {
+        return (
+            <View className="flex-1 items-center justify-center">
+                <LoadingSpin
+                    styleContainer={{ width: 50, height: 50 }}
+                />
+            </View>
+        )
+
+    }
+
 
     const renderList = (postData) => {
 
@@ -63,7 +121,10 @@ const MainPage = () => {
 
                     keyExtractor={item => item.post_id}
                     onEndReached={() => {
-                        setPostCount(postCount + NUM_POSTS_TO_LOAD)
+                        let temp = loadedPostOffset + NUM_POSTS_TO_LOAD
+                        if (temp < totalPostCount)
+                            setLoadedPostOffset(temp) 
+                        console.log(temp)
                     }}
                     ListFooterComponent={<LoadingSpin
                         styleContainer={{ width: 30, height: 30 }}

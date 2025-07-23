@@ -161,7 +161,7 @@ app.get("/count/posts", async (req, res) => {
 
     try {
         const numPosts = await pool.query(`SELECT COUNT(*) FROM posts`)
-        res.json(numPosts.rows[0].count)
+        res.json(numPosts.rows[0])
     } catch (error) {
         console.log(error.message)
     }
