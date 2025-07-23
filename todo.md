@@ -11,9 +11,16 @@
 ~~    - I should probably just make a separate HomePage display component ~~
 - Add option to delete posts
 - Add option to edit posts
-- Make headers work (buttons)
-- Make it so posting comments or posts redirects to home page for now
-- Add loading
+~~ - Make main headers work (buttons) ~~
+~~ - Make it so posting comments or posts redirects to home page for now ~~ 
+~~ - Add most of loading ~~
+- Make the icon buttons in own export to be used 
+- Create account View
+- Create sections to make posts in courses
+- Create search bar for courses
+- Add replies
+- Create funcitoning sign-in
+- Fix index.js that exports components, make usage consistent
 
 *Post-Page:*
 ~~  - Make look pretty ~~ 
@@ -23,9 +30,8 @@
 
 *Not-So Major (Major but to be done later):*
 ~~ - Add botom naviation tabs ~~ ~~ - Make the top header functional ~~
-- Create account View
 - Create functioning sign in and account View
-- Add loading into global context
+~~ - Add loading into global context ~~ ?
 - Send 500 for bad server request in backend
 
 *Other:*

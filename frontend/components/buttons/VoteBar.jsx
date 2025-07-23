@@ -2,7 +2,6 @@ import { View, Text, TouchableOpacity } from 'react-native'
 import { useState, useCallback } from 'react'
 import EntypoIcon from "react-native-vector-icons/Entypo"
 import { useFocusEffect } from 'expo-router';
-import { useLoadingContext, LoadingSpin } from '../context/LoadingProvider';
 
 const VALID_POST_TYPES = [
     "posts", "comments", "replies"
@@ -28,7 +27,6 @@ const Vote = ({ postId, accountId, styleContainer, postType }) => {
             if (!res.ok)
                 throw new Error(`Server error ${res.status}`)
 
-            console.log("is it here?")
 
 
             await fetchVoteData()

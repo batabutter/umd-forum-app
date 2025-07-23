@@ -1,10 +1,10 @@
 import { View, Text, TextInput, TouchableOpacity } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import { Header, Icon } from 'react-native-elements'
-import { useGlobalContext } from '../context/GlobalProvider'
+import { useGlobalContext } from '../../context/GlobalProvider'
 import { router, useNavigation } from "expo-router"
 
-import DynamicButton from "./DynamicButton"
+import DynamicButton from "../buttons/DynamicButton"
 
 const CreatePostView = () => {
     const [account, setAccount] = useState([])
@@ -49,6 +49,7 @@ const CreatePostView = () => {
     const CloseButton = () => {
         return (
             <TouchableOpacity
+                className="justify-center items-center flex-1"
                 onPress={() => router.push(`/(home)/homepage`)}>
                     <Icon name="close" size={24} color="#fff"/>
             </TouchableOpacity>

@@ -3,7 +3,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { useFocusEffect } from 'expo-router';
 import { Header } from 'react-native-elements'
 
-import Post from "./Post"
+import Post from "./post/Post"
 import { useGlobalContext } from '../context/GlobalProvider';
 import { useLoadingContext, LoadingSpin } from '../context/LoadingProvider';
 
@@ -124,7 +124,6 @@ const MainPage = () => {
                         let temp = loadedPostOffset + NUM_POSTS_TO_LOAD
                         if (temp < totalPostCount)
                             setLoadedPostOffset(temp) 
-                        console.log(temp)
                     }}
                     ListFooterComponent={<LoadingSpin
                         styleContainer={{ width: 30, height: 30 }}

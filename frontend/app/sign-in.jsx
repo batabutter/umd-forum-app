@@ -5,7 +5,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import "../global.css";
 
 
-import DynamicButton from "../components/DynamicButton";
+import DynamicButton from "../components/buttons/DynamicButton";
 import { images } from '../constants';
 const SignIn = () => {
   return (

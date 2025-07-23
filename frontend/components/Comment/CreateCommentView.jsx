@@ -1,11 +1,11 @@
-import { View, Text, TextInput } from 'react-native'
+import { View, Text, TextInput, TouchableOpacity } from 'react-native'
 import React, { useEffect, useState } from 'react'
-import { useLocalSearchParams } from 'expo-router'
-import DynamicButton from '../DynamicButton'
-import { Header } from 'react-native-elements'
+import { router } from "expo-router"
+import DynamicButton from '../buttons/DynamicButton'
+import { Header, Icon } from 'react-native-elements'
 import { useGlobalContext } from '../../context/GlobalProvider'
 
-const CommentViewContent = ({ postId }) => {
+const CreateCommentView = ({ postId }) => {
 
     const [post, setPost] = useState([])
     const [bodyText, setBodytext] = useState("")
@@ -42,11 +42,23 @@ const CommentViewContent = ({ postId }) => {
 
             }
 
+            router.push(`/(postview)/${postId}`)
+
             console.log("Comment created!!!")
 
         } catch (error) {
             console.log(error.message)
         }
+    }
+
+    const CloseButton = () => {
+        return (
+            <TouchableOpacity
+             className="justify-center items-center flex-1"
+                onPress={() => router.push(`/(postview)/${postId}`)}>
+                <Icon name="close" size={24} color="#fff" />
+            </TouchableOpacity>
+        )
     }
 
 
@@ -58,8 +70,7 @@ const CommentViewContent = ({ postId }) => {
     return (
         <View>
             <Header
-                leftComponent={{ icon: 'close', color: '#fff' }}
-                centerComponent={{ text: "", style: { color: '#fff' } }}
+                leftComponent={<CloseButton />}
                 rightComponent={
                     <DynamicButton
                         text="Post"
@@ -67,6 +78,7 @@ const CommentViewContent = ({ postId }) => {
                         handlePress={() => publishComment(bodyText)}
                     />}
                 backgroundColor='#222831'
+                className="items-center justify-center"
             />
 
             <View className="border-b-2 border-gray-600">
@@ -80,10 +92,10 @@ const CommentViewContent = ({ postId }) => {
                     value={bodyText}
                     textAlignVertical='top'
                 />
-                
+
             </View>
         </View>
     )
 }
 
-export default CommentViewContent
+export default CreateCommentView

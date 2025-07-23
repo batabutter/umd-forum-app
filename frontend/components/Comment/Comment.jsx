@@ -1,7 +1,7 @@
 import { View, Text } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import { useGlobalContext } from '../../context/GlobalProvider'
-import Vote from '../VoteBar'
+import Vote from '../buttons/VoteBar'
 import { LoadingSpin } from '../../context/LoadingProvider';
 
 const Comment = ({ title, content, upvotes, downvotes, num_replies, commentId }) => {

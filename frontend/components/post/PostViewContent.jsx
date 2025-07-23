@@ -1,14 +1,13 @@
 import { SafeAreaView, View, Text, TouchableOpacity, FlatList } from 'react-native'
 import React, { useState, useEffect, useCallback } from 'react'
-import { Header } from 'react-native-elements'
+import { Header, Icon } from 'react-native-elements'
 import { useFocusEffect, useLocalSearchParams } from 'expo-router';
-import EntypoIcon from "react-native-vector-icons/Entypo"
-import { useGlobalContext } from '../context/GlobalProvider';
-import Vote from './VoteBar';
-import Comment from "./comment/Comment"
-import BottomCommentBar from './comment/BottomCommentBar';
-import { useLoadingContext, LoadingSpin } from '../context/LoadingProvider';
-import CommentList from './comment/CommentList';
+import { useGlobalContext } from '../../context/GlobalProvider';
+import { router } from "expo-router"
+import Vote from '../buttons/VoteBar';
+import BottomCommentBar from '../comment/BottomCommentBar';
+import { useLoadingContext, LoadingSpin } from '../../context/LoadingProvider';
+import CommentList from '../comment/CommentList';
 
 /*
 
@@ -89,34 +88,50 @@ const PostViewContent = ({ postId }) => {
 
     }
 
+    /*
+        For now, bring to homepage, but in future, the course section you're
+        posting in
+    */
+
+    const BackArrow = () => {
+        return (
+            <TouchableOpacity
+                className="justify-center items-center flex-1"
+                onPress={() => router.push(`/(home)/homepage`)}>
+                    <Icon name="arrow-back" size={24} color="#fff"/>
+            </TouchableOpacity>
+        )
+    }
+
+    const Home = () => {
+        return (
+            <TouchableOpacity
+                className="justify-center items-center flex-1"
+                onPress={() => router.push(`/(home)/homepage`)}>
+                    <Icon name="home" size={24} color="#fff"/>
+            </TouchableOpacity>
+        )
+    }
+
     return (
         <SafeAreaView className="flex-1">
             <Header
-                leftComponent={{ icon: 'menu', color: '#fff' }}
+                leftComponent={<BackArrow />}
                 centerComponent={{ text: user.user_name, style: { color: '#fff' } }}
-                rightComponent={{ icon: 'home', color: '#fff' }}
+                rightComponent={<Home />}
                 backgroundColor='#222831'
             />
 
             <View className="px-5 relative flex-1">
-                <Text>
-                    User name
-                </Text>
-                <Text>
-                    Post ID : {postId}
-                </Text>
-                <Text className="font-pbold ml-6 text-3xl">
-                    {title}
-                </Text>
+                <Text> User name </Text>
+                <Text> Post ID : {postId} </Text>
+                <Text className="font-pbold ml-6 text-3xl"> {title} </Text>
 
                 <View className="border border-gray-600 min-h-40 mt-5 rounded-md">
 
-                    <Text className=" ml-5 mt-5">
-                        {content}
-                    </Text>
+                    <Text className=" ml-5 mt-5"> {content} </Text>
 
                 </View>
-
 
                 <View className="flex-row justify-center items-center mt-5 gap-2">
                     <Vote
@@ -132,13 +147,8 @@ const PostViewContent = ({ postId }) => {
 
                 </View>
 
-                <CommentList
-                    comments={comments}
-                />
-
-                <BottomCommentBar
-                    postId={postId}
-                />
+                <CommentList comments={comments}/>
+                <BottomCommentBar postId={postId}/>
 
             </View>
 

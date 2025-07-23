@@ -2,10 +2,9 @@ import { SafeAreaView, View, Text, Touchable, TouchableOpacity } from 'react-nat
 import EntypoIcon from "react-native-vector-icons/Entypo"
 import { router } from "expo-router"
 import React, { useEffect, useState } from 'react'
-import "../global.css";
-import Vote from './VoteBar';
-import { useGlobalContext } from '../context/GlobalProvider';
-import { LoadingSpin } from '../context/LoadingProvider';
+import Vote from '../buttons/VoteBar';
+import { useGlobalContext } from '../../context/GlobalProvider';
+import { LoadingSpin } from '../../context/LoadingProvider';
 
 const Post = ({ title, content, numcomments, postId }) => {
 

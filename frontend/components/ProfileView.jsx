@@ -1,7 +1,7 @@
 import { View, Text, TouchableOpacity } from 'react-native'
 import { Header } from 'react-native-elements'
 import React from 'react'
-import SwitchAccountButton from './SwitchAccountButton'
+import SwitchAccountButton from './buttons/SwitchAccountButton'
 
 const ProfileView = () => {
     return (

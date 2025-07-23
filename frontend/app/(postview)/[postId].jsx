@@ -1,8 +1,6 @@
-import { View, Text } from 'react-native'
-import React from 'react'
-import { SafeAreaView } from 'react-native-safe-area-context'
+import { View } from 'react-native'
 import { useLocalSearchParams } from 'expo-router';
-import PostViewContent from '../../components/PostViewContent';
+import PostViewContent from '../../components/post/PostViewContent';
 
 const postview = () => {
   const { postId } = useLocalSearchParams();

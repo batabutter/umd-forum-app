@@ -4,7 +4,7 @@ import { useFocusEffect } from 'expo-router';
 import { Header } from 'react-native-elements'
 
 import "../../global.css";
-import Post from '../../components/Post';
+import Post from '../../components/post/Post';
 import { useGlobalContext } from '../../context/GlobalProvider';
 import MainPage from '../../components/MainPage';
 

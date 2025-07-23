@@ -1,9 +1,9 @@
-import DynamicButton from "./DynamicButton"
-import Post from "./Post"
-import PostViewContent from "./PostViewContent";
+import DynamicButton from "./buttons/DynamicButton"
+import Post from "./post/Post"
+import PostViewContent from "./post/PostViewContent";
 import comment from "./comment/Comment";
-import CreatePostView from "./CreatePostView";
-import SwitchAccount from "./SwitchAccountButton";
+import CreatePostView from "./post/CreatePostView";
+import SwitchAccount from "./buttons/SwitchAccountButton";
 import MainPage from "./MainPage";
 
 export {
