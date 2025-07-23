@@ -20,7 +20,7 @@ const Vote = ({ postId, accountId, styleContainer, postType }) => {
 
             let vote = upvote ? "upvote" : "downvote"
 
-                `http://192.168.1.156:5000/${postType}/${postId}/${vote}/${accountId}`
+            const url = `http://192.168.1.156:5000/${postType}/${postId}/${vote}/${accountId}`
 
             const res = await fetch(url, { method: "POST" });
 
