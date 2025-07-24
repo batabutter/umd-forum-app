@@ -23,11 +23,13 @@ const MainPage = () => {
     const [loadedPostOffset, setLoadedPostOffset] = useState(0)
     const [totalPostCount, setTotalPostCount] = useState(0)
     const { isLoading, setIsLoading } = useLoadingContext()
+    const [ isLoadingMore, setIsLoadingMore] = useState(false)
 
     // For now, I am just using a placeholder account
 
     const getPosts = async () => {
         try {
+            setIsLoadingMore(true)
             const response = await fetch(`http://192.168.1.156:5000/getPosts/${NUM_POSTS_TO_LOAD}/${loadedPostOffset}`)
 
             if (!response.ok)
@@ -40,6 +42,8 @@ const MainPage = () => {
             if (loadedPostOffset != 0 && jsonData.length != 0) {
                 setCurrPosts(currposts => [...currposts, ...jsonData])
             }
+
+            setIsLoadingMore(false)
 
         } catch (error) {
             console.log(error.message)
@@ -125,9 +129,8 @@ const MainPage = () => {
                         if (temp < totalPostCount)
                             setLoadedPostOffset(temp) 
                     }}
-                    ListFooterComponent={<LoadingSpin
-                        styleContainer={{ width: 30, height: 30 }}
-                    />}
+                    ListFooterComponent={isLoadingMore ? (<LoadingSpin
+                        styleContainer={{ width: 30, height: 30 }} />) : null}
                 />
             )
         } else {

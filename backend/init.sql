@@ -4,7 +4,7 @@ DROP TABLE comment_votes;
 
 DROP TABLE post_votes;
 
-DROP TABLE comments;
+DROP TABLE comments CASCADE;
 
 DROP TABLE posts CASCADE;
 
@@ -39,7 +39,7 @@ CREATE TABLE comments (
     account_id INT NOT NULL,
     content varchar(80),
     num_replies numeric DEFAULT 0,
-    CONSTRAINT fk_post FOREIGN KEY (post_id) REFERENCES posts (post_id),
+    CONSTRAINT fk_post FOREIGN KEY (post_id) REFERENCES posts (post_id) ON DELETE CASCADE,
     CONSTRAINT fk_comment_account FOREIGN KEY (account_id) REFERENCES accounts (account_id)
 );
 
@@ -48,7 +48,7 @@ CREATE TABLE post_votes (
     post_id int NOT NULL,
     account_id int NOT NULL,
     vote_val numeric DEFAULT 0,
-    CONSTRAINT fk_post FOREIGN KEY (post_id) REFERENCES posts (post_id),
+    CONSTRAINT fk_post FOREIGN KEY (post_id) REFERENCES posts (post_id) ON DELETE CASCADE,
     CONSTRAINT fk_account FOREIGN KEY (account_id) REFERENCES accounts (account_id),
     CONSTRAINT unique_post_vote UNIQUE (post_id, account_id),
     check (vote_val in (-1, 1))
@@ -59,7 +59,7 @@ CREATE TABLE comment_votes (
     comment_id int NOT NULL,
     account_id int NOT NULL,
     vote_val numeric DEFAULT 0,
-    CONSTRAINT fk_comment FOREIGN KEY (comment_id) REFERENCES comments (comment_id),
+    CONSTRAINT fk_comment FOREIGN KEY (comment_id) REFERENCES comments (comment_id) ON DELETE CASCADE,
     CONSTRAINT fk_account FOREIGN KEY (account_id) REFERENCES accounts (account_id),
     CONSTRAINT unique_comment_vote UNIQUE (comment_id, account_id),
     check (vote_val in (-1, 1))
@@ -221,6 +221,34 @@ BEGIN
         UPDATE posts
         SET content = p_content
         WHERE post_id=p_post_id;
+    ELSE
+        RAISE EXCEPTION 'This post does not belong to the user';
+    END IF;
+    
+END;
+$$;
+
+CREATE OR REPLACE PROCEDURE check_delete(
+    p_post_id INT,
+    p_account_id INT)
+LANGUAGE plpgsql
+AS
+$$
+DECLARE
+    v_comment_id INT;
+BEGIN
+
+    -- Check null
+    IF (p_post_id IS NULL OR p_account_id IS NULL) THEN
+        RAISE EXCEPTION 'Post id or account id is invalid';
+    END IF;
+
+    -- Check to make sure the account lines up with the post id
+    IF EXISTS (
+        SELECT 1 FROM posts 
+        WHERE post_id = p_post_id AND account_id = p_account_id
+    ) THEN
+        DELETE FROM posts WHERE post_id = p_post_id;
     ELSE
         RAISE EXCEPTION 'This post does not belong to the user';
     END IF;

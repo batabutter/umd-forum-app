@@ -22,6 +22,8 @@
 - Create funcitoning sign-in
 - Fix index.js that exports components, make usage consistent
 - Fix random prints of undefined in the backend
+- Fix random backend errors (this needs to be done asap)
+- Make list loading for comments done
 
 *Post-Page:*
 ~~  - Make look pretty ~~ 
@@ -42,4 +44,4 @@
 - Add character limits for posts and comments
 - Add "go to profile" button in the three dots to delete or edit posts
 - Clean up fetch requests
-
+- Add "Are you sure?" prompt when delelting a post.

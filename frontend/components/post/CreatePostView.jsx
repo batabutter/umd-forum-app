@@ -1,23 +1,25 @@
 import { View, Text, TextInput, TouchableOpacity } from 'react-native'
-import React, { useEffect, useState } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 import { Header, Icon } from 'react-native-elements'
 import { useGlobalContext } from '../../context/GlobalProvider'
-import { router, useNavigation } from "expo-router"
+import { router, useFocusEffect, useNavigation } from "expo-router"
 
 import DynamicButton from "../buttons/DynamicButton"
 import CloseButton from '../buttons/CloseButton'
+import { useLoadingContext } from '../../context/LoadingProvider'
 
 const CreatePostView = () => {
     const [account, setAccount] = useState([])
     const [titleText, setTitleText] = useState("")
     const [bodyText, setBodytext] = useState("")
     const { user } = useGlobalContext()
-    const navigation =  useNavigation()
+    const { isLoading, setIsLoading } = useLoadingContext()
+    const navigation = useNavigation()
 
     const publishPost = async (title, body) => {
         try {
             console.log("Posting...")
-            if (titleText.length != 0 && bodyText.length != 0 ) {
+            if (titleText.length != 0 && bodyText.length != 0) {
                 await fetch(`http://192.168.1.156:5000/accounts/${user.account_id}/posts`,
                     {
                         method: "POST",
@@ -34,7 +36,7 @@ const CreatePostView = () => {
             }
             router.push(`/(home)/homepage`)
             console.log("Post created!!!")
-            
+
 
         } catch (error) {
             console.log(error.message)
@@ -47,13 +49,21 @@ const CreatePostView = () => {
         })
     }, [navigation])
 
+    useFocusEffect(
+        useCallback(() => {
+            setTitleText("")
+            setBodytext("")
+        }, [])
+    )
+
+
     return (
         <>
 
             <View>
 
                 <Header
-                    leftComponent={<CloseButton routeDestination={"/(home)/homepage"}/>}
+                    leftComponent={<CloseButton routeDestination={"/(home)/homepage"} />}
                     centerComponent={{ text: "", style: { color: '#fff' } }}
                     rightComponent={
                         <DynamicButton

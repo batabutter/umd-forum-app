@@ -262,24 +262,13 @@ app.put("/accounts/:account_id/posts/:post_id", async (req, res) => {
 app.delete("/accounts/:account_id/posts/:post_id", async (req, res) => {
 
     try {
-        const { account_id, post_id } = req.params
-
-        const deleteComments = await pool.query(
-            "DELETE FROM comments WHERE post_id = $1",
-            [post_id])
-
-        await pool.query(
-            "DELETE FROM posts WHERE post_id = $1",
-            [post_id])
-
-        await pool.query(
-            "UPDATE accounts SET \
-            num_posts = num_posts - 1 WHERE account_id = $1 RETURNING *",
-            [account_id]
-        )
-        res.json(`Post deleted with id ${post_id} and account ${account_id}`)
+        const { post_id, account_id } = req.params
+        await pool.query("CALL check_delete($1, $2)",
+            [post_id, account_id])
+        
+        res.json("Post deleted!")
     } catch (error) {
-        console.log(error.message)
+        console.error(error.message)
     }
 
 })
