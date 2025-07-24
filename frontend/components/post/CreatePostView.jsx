@@ -5,6 +5,7 @@ import { useGlobalContext } from '../../context/GlobalProvider'
 import { router, useNavigation } from "expo-router"
 
 import DynamicButton from "../buttons/DynamicButton"
+import CloseButton from '../buttons/CloseButton'
 
 const CreatePostView = () => {
     const [account, setAccount] = useState([])
@@ -16,7 +17,7 @@ const CreatePostView = () => {
     const publishPost = async (title, body) => {
         try {
             console.log("Posting...")
-            if (titleText != "" && bodyText != "") {
+            if (titleText.length != 0 && bodyText.length != 0 ) {
                 await fetch(`http://192.168.1.156:5000/accounts/${user.account_id}/posts`,
                     {
                         method: "POST",
@@ -46,23 +47,13 @@ const CreatePostView = () => {
         })
     }, [navigation])
 
-    const CloseButton = () => {
-        return (
-            <TouchableOpacity
-                className="justify-center items-center flex-1"
-                onPress={() => router.push(`/(home)/homepage`)}>
-                    <Icon name="close" size={24} color="#fff"/>
-            </TouchableOpacity>
-        )
-    }
-
     return (
         <>
 
             <View>
 
                 <Header
-                    leftComponent={<CloseButton />}
+                    leftComponent={<CloseButton routeDestination={"/(home)/homepage"}/>}
                     centerComponent={{ text: "", style: { color: '#fff' } }}
                     rightComponent={
                         <DynamicButton

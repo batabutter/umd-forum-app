@@ -4,6 +4,7 @@ import { router } from "expo-router"
 import DynamicButton from '../buttons/DynamicButton'
 import { Header, Icon } from 'react-native-elements'
 import { useGlobalContext } from '../../context/GlobalProvider'
+import CloseButton from '../buttons/CloseButton'
 
 const CreateCommentView = ({ postId }) => {
 
@@ -51,18 +52,6 @@ const CreateCommentView = ({ postId }) => {
         }
     }
 
-    const CloseButton = () => {
-        return (
-            <TouchableOpacity
-             className="justify-center items-center flex-1"
-                onPress={() => router.push(`/(postview)/${postId}`)}>
-                <Icon name="close" size={24} color="#fff" />
-            </TouchableOpacity>
-        )
-    }
-
-
-
     useEffect(() => {
         getPost()
     }, [])
@@ -70,7 +59,7 @@ const CreateCommentView = ({ postId }) => {
     return (
         <View>
             <Header
-                leftComponent={<CloseButton />}
+                leftComponent={<CloseButton routeDestination={`/(postview)/${postId}`}/>}
                 rightComponent={
                     <DynamicButton
                         text="Post"

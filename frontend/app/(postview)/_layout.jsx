@@ -19,6 +19,11 @@ const PostNavigation = () => {
                 options={{ headerShown: false }}
             />
 
+            <Stack.Screen
+                name="editview"
+                options={{ headerShown: false }}
+            />
+
             
         </Stack>
     )

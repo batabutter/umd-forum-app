@@ -20,6 +20,9 @@ module.exports = {
         gray: {
           100: "#CDCDE0",
         },
+        cornflower: {
+          DEFAULT: "#6495ED"
+        }
       },
       fontFamily: {
         pthin: ["Poppins-Thin", "sans-serif"],

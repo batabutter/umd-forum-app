@@ -5,13 +5,10 @@ import PostViewContent from '../../components/post/PostViewContent';
 const postview = () => {
   const { postId } = useLocalSearchParams();
 
-  return (
-    <View className="flex-1" >      
+  return (     
       <PostViewContent
         postId={postId}
       />
-
-    </View>
 
   )
 }

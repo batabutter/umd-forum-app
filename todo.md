@@ -21,6 +21,7 @@
 - Add replies
 - Create funcitoning sign-in
 - Fix index.js that exports components, make usage consistent
+- Fix random prints of undefined in the backend
 
 *Post-Page:*
 ~~  - Make look pretty ~~ 
@@ -39,4 +40,6 @@
 ~~  - Make homepage prettier~~ 
 - Create Name for the app ("Terp-Talk" maybe???)
 - Add character limits for posts and comments
+- Add "go to profile" button in the three dots to delete or edit posts
+- Clean up fetch requests
 

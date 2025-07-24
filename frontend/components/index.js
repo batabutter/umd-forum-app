@@ -5,6 +5,7 @@ import comment from "./comment/Comment";
 import CreatePostView from "./post/CreatePostView";
 import SwitchAccount from "./buttons/SwitchAccountButton";
 import MainPage from "./MainPage";
+import PostDotsOptions from "./buttons/PostDotsOptions";
 
 export {
     DynamicButton,
@@ -13,5 +14,6 @@ export {
     comment,
     CreatePostView,
     SwitchAccount,
-    MainPage
+    MainPage,
+    PostDotsOptions
 };

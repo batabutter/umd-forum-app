@@ -72,6 +72,46 @@ app.get("/accounts/:username", async (req, res) => {
 
 })
 
+// Get an account id from a post id
+
+app.get("/posts/:post_id/poster_id", async (req, res) => {
+
+    try {
+        const { post_id } = req.params
+        const account_id = await pool.query("SELECT account_id FROM posts WHERE post_id = $1",
+            [post_id]
+        )
+
+        res.json(account_id.rows[0])
+    } catch (error) {
+        console.log(error.message)
+    }
+
+
+})
+
+// Get a username from a post id
+
+app.get("/posts/:post_id/poster", async (req, res) => {
+
+    try {
+        const { post_id } = req.params
+        const account_id = await pool.query("SELECT account_id FROM posts WHERE post_id = $1",
+            [post_id]
+        )
+        const username = await pool.query("SELECT user_name FROM accounts WHERE account_id = $1",
+            [account_id.rows[0].account_id]
+        )
+
+        res.json(username.rows[0])
+    } catch (error) {
+        console.log(error.message)
+    }
+
+
+})
+
+
 // TODO: delete an account (This needs way more security lmao)
 
 /*
@@ -204,14 +244,14 @@ app.get("/posts/:id/comments", async (req, res) => {
 
 // edit a post
 
-app.put("/posts/:id", async (req, res) => {
+app.put("/accounts/:account_id/posts/:post_id", async (req, res) => {
     try {
-        const { id } = req.params
+        const { post_id, account_id } = req.params
         const { content } = req.body
-        const updatePost = await pool.query("UPDATE posts SET \
-            content = $1 WHERE post_id = $2 RETURNING *",
-            [content, id])
-        res.json(updatePost.rows[0])
+        await pool.query("CALL check_edit($1, $2, $3)",
+            [post_id, account_id, content])
+        
+        res.json("Post updated!")
     } catch (error) {
         console.error(error.message)
     }

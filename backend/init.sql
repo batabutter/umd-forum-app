@@ -197,3 +197,33 @@ BEGIN
     END IF;
 END;
 $$;
+
+CREATE OR REPLACE PROCEDURE check_edit(
+    p_post_id INT,
+    p_account_id INT,
+    p_content TEXT)
+LANGUAGE plpgsql
+AS
+$$
+BEGIN
+
+    -- Check null
+    IF (p_post_id IS NULL OR p_account_id IS NULL) THEN
+        RAISE EXCEPTION 'Post id or account id is invalid';
+    END IF;
+
+    -- Check to make sure the account lines up with the post id
+    IF EXISTS (
+        SELECT 1 FROM posts 
+        WHERE post_id = p_post_id AND account_id = p_account_id
+
+    ) THEN
+        UPDATE posts
+        SET content = p_content
+        WHERE post_id=p_post_id;
+    ELSE
+        RAISE EXCEPTION 'This post does not belong to the user';
+    END IF;
+    
+END;
+$$;
