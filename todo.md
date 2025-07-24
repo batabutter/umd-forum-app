@@ -24,6 +24,7 @@
 - Fix random prints of undefined in the backend
 - Fix random backend errors (this needs to be done asap)
 - Make list loading for comments done
+- Add editing and deleting comments
 
 *Post-Page:*
 ~~  - Make look pretty ~~ 

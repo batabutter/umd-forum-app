@@ -43,7 +43,6 @@ const MainPage = () => {
                 setCurrPosts(currposts => [...currposts, ...jsonData])
             }
 
-            setIsLoadingMore(false)
 
         } catch (error) {
             console.log(error.message)
