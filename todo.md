@@ -46,3 +46,4 @@
 - Add "go to profile" button in the three dots to delete or edit posts
 - Clean up fetch requests
 - Add "Are you sure?" prompt when delelting a post.
+- Make eiditn and delete button not get psued out of the way for longer titles
